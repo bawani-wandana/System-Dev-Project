@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 
-const withMT = require("@material-tailwind/react/utils/withMT");
+const withMT = require("@material-tailwind/html/utils/withMT");
+
 
 module.exports = withMT({
   content: [
@@ -15,13 +16,13 @@ module.exports = withMT({
       c4: '#FFEEE8',
       c5:'#FF9209',
       c6: '#090937',
-      c7: '#'
+      b1:'#1e22a8',
     },
-    fonts:{
+    fontFamily:{
+      'font1': ['Lato'],
 
     },
     extend: {},
   },
-  plugins: [],
+  plugins:[],
 });
-

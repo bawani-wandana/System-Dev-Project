@@ -3,6 +3,7 @@ import './index.css'
 import { Button } from '@material-tailwind/react'
 import Homepage from './pages/Homepage'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+import LoginPage from './pages/LoginPage'
 
 const router = createBrowserRouter([
   {
@@ -12,7 +13,11 @@ const router = createBrowserRouter([
   {
     path: '*',
     element:<h1>Error 404: PAGE NOT AVAILABLE</h1>
-  }
+  },
+  {
+    path:'loginpage',
+    element: <LoginPage/>
+  },
 ])
 function App() {
   return (

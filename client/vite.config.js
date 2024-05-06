@@ -8,6 +8,6 @@ export default defineConfig({
     extract: 'output.css', // Sets the output filename for extracted CSS
   },
   server: {
-    port: 3000,
+    port: 3030,
   }
 })
