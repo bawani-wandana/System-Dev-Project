@@ -1,25 +1,34 @@
 import React from 'react'
 import Navbar from '../components/navBar/Navbar'
 import Footer from '../components/footer/Footer'
-import homeimage from '../assets/homeimage.png'
-import bg_banner from '../assets/bg_banner.jpg'
+import HomeBanner from '../components/HomeBanner'
+import ItemList from '../components/ItemList'
+
+
+
 
 const Homepage = () => {
     return (
-        <div>
+        <div className='dark:bg-gray-900'>
             <Navbar />
-            <div className='home-banner'>
-                <div className='homeimage-container h-screen relative  w-screen'>
+            <HomeBanner/>
+            <ItemList/>
+            
+            
+            
+            
 
 
 
 
-                </div>
-                <Footer />
 
-            </div>
-            </div>
-            )
+
+
+
+
+            <Footer />
+        </div>
+    )
 
 }
 
