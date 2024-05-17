@@ -1,24 +1,35 @@
 const express = require('express');
-const mysql = require('mysql');
-const cors = require('cors');
+const cors = require ('cors');
+const db = require ('./config/databaseConnection')
+const userRoutes = require('./routes/userRoutes');
 
-const app = express()
-app.use(cors())
+require ("dotenv").config();
 
-const db = mysql.createConnection(
-    {
-       host:"localhost",
-       user:'root',
-       password:'',
-       database:'pavithra_bookshop' 
-    }
-)
 
-app.get('/',(re,res)=>{
-    return res.json("From Backend Side");
-})
+const app = express();
 
-app.get('')
-app.listen(8081,()=>{
+app.use(express.json());
+
+// Middleware to parse incoming request bodies
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+
+// Routes
+app.use('/api/users', userRoutes);
+
+app.use((err, req, res, next)=>{
+    err.statusCode =err.statusCode || 500;
+    err.message = err.message || "Internal Server Error";
+    res.status(err.statusCode).json({
+        message:err.message,
+    });
+});
+
+
+
+//port assign to the backend server for successful connection requests
+app.listen(3000, () => {
     console.log("listening");
-})
+  })
+  

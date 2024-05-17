@@ -1,10 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import loginimage from '../assets/loginimage.png'
 import { Link } from 'react-router-dom'
 import { FaHome } from "react-icons/fa";
+import validation from './LoginValidation';
 
 
 const LoginPage = () => {
+  const [values, setValues] = useState({
+    email:'',
+    password :''
+  })
+  const [errors, setErrors] = useState({})
+
+  const handleInput =(event)=> {
+    setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
+  }
+
+  const handleSubmit = (event) => {
+    event.preventDefault ();
+    setErrors(validation(values));
+
+  }
+
   return (
     <div className='flex justify-center items-center bg-orange-50 h-screen w-full m-auto border rounded-md
     overflow-hidden shadow-c3 font-[Lato]'>
@@ -36,13 +53,15 @@ const LoginPage = () => {
            
           </div>
 
-          <form action="" className='form grid gap-6 '>
+          <form action="" onSubmit={handleSubmit} className='form grid gap-6 '>
 
             <div className='inputDiv gap-4 bg-none'>
               <label htmlFor="email" className='text-black pb-4  font-medium text-[25px]
               block'>Email</label>
               <div className='input text-[20px] '>
-                <input type="email" id='email' placeholder='Enter Email' className='flex gap-3 rounded-md border-[2px] border-black pl-3 h-16 text-[20px] w-96 '  />
+                <input type="email" id='email' placeholder='Enter Email' name='email' onChange={handleInput} 
+                className='flex gap-3 rounded-md border-[2px] border-black pl-3 h-16 text-[20px] w-96 '  />
+                {errors.email && <span className='text-red-600'> {errors.email}</span> }
               </div>
             </div>
 
@@ -51,11 +70,12 @@ const LoginPage = () => {
               <label htmlFor="password" className='text-black pb-4 font-medium text-[25px]
               block'>Password</label>
               <div className='input text-[20px] '>
-                <input type="password" id='password' placeholder='Enter Password' className='flex gap-3 rounded-md border-[2px] pl-3 border-black h-16 text-[20px] w-96' />
+                <input type="password" id='password' placeholder='Enter Password' name='password' onChange={handleInput} className='flex gap-3 rounded-md border-[2px] pl-3 border-black h-16 text-[20px] w-96' />
+                {errors.password && <span className='text-red-600'> {errors.password}</span> }
               </div>
             </div>
 
-            <button className='btn rounded-md h-16 text-[25px] font-bold  w-96 items-center m-auto justify-center bg-c3 text-white hover:bg-black hover:text-white'>
+            <button type='submit' className='btn rounded-md h-16 text-[25px] font-bold  w-96 items-center m-auto justify-center bg-c3 text-white hover:bg-black hover:text-white'>
               <span>Login</span>
             </button>
 
