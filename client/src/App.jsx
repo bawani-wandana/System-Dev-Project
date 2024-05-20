@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import react, { useEffect, useState } from 'react'
 import './index.css'
-import { Button } from '@material-tailwind/react'
 import Homepage from './pages/Homepage'
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import CreateAccount from './pages/CreateAccount'
+import ProtectedData from './components/ProtectedData'
+
+import AdminInventory from './pages/AdminInventory'
 
 const router = createBrowserRouter([
   {
@@ -16,14 +18,29 @@ const router = createBrowserRouter([
     element:<h1>Error 404: PAGE NOT AVAILABLE</h1>
   },
   {
-    path:'loginpage',
+    path:'/loginpage',
     element: <LoginPage/>
   },
   {
-    path:'createaccount',
+    path:'/createaccount',
     element: <CreateAccount/>
   },
+  {
+    path: '/protected',
+    element: <ProtectedData />
+  },
+  // {
+  //   path:'/dashboard',
+  //   element: 
+  // },
+  {
+    path:'/inventory',
+    element: <AdminInventory/>, 
+  },
+ 
 ])
+
+
 function App() {
 
 

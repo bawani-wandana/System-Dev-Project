@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import register from '../assets/register.png';
 import { FaHome } from "react-icons/fa";
 import validation from './CreateAccountValidation';
-// import axiosInstance from '../axioInstance';
+import axios from 'axios';
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
@@ -16,6 +16,7 @@ const CreateAccount = () => {
     confirmpassword: '',
   });
 
+  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
 
   const handleInput = (event) => {
@@ -26,30 +27,15 @@ const CreateAccount = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors(validation(values));
-    const validationErrors = validation(values);
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length === 0) {
-      // Submit the form data to the backend
-      axiosInstance
-        .post('/api/users/createAccount', {
-          firstname: values.firstname,
-          lastname: values.lastname,
-          email: values.email,
-          username: values.username,
-          phonenumber: values.mobilenumber,
-          password: values.password,
-        })
-        .then((response) => {
-          console.log('User registered successfully:', response.data);
-          // You can redirect the user or display a success message here
-        })
-        .catch((error) => {
-          console.error('There was an error registering the user:', error.response.data);
-          // Handle error response
-        });
+    if (errors.username==="" && errors.email === "" && errors.firstname === "" && errors.lastname === "" 
+      && errors.phonenumber === "" && errors.password === "" && errors.confirmpassword === ""
+    ){
+      axios.post('http://localhost:8081/api/createaccount', values)
+      .then (res => {
+        navigate('/loginpage')
+      })
+      .catch (err=> console.log(err));
     }
-
 
   };
 

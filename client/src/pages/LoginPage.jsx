@@ -1,26 +1,44 @@
 import React, { useState } from 'react'
 import loginimage from '../assets/loginimage.png'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaHome } from "react-icons/fa";
 import validation from './LoginValidation';
+import axios from 'axios';
 
 
 const LoginPage = () => {
   const [values, setValues] = useState({
-    email:'',
-    password :''
+    email: '',
+    password: ''
   })
+
+
   const [errors, setErrors] = useState({})
 
-  const handleInput =(event)=> {
-    setValues(prev => ({...prev, [event.target.name]: [event.target.value]}))
-  }
+  const handleInput = (event) => {
+    const { name, value } = event.target;
+    setValues({ ...values, [name]: value });
+  };
 
+  const navigate = useNavigate();
   const handleSubmit = (event) => {
-    event.preventDefault ();
+    event.preventDefault();
     setErrors(validation(values));
 
-  }
+    if (errors.email === "" && errors.password === "") {
+      axios.post('http://localhost:8081/api/login', values)
+        .then(res => {
+          if (res.data === "success") {
+            // Store JWT token in localStorage
+            localStorage.setItem('token', res.data.token);
+            navigate('/');
+          } else {
+            alert("No record existed");
+          }
+        })
+        .catch(err => console.log(err));
+    }
+  };
 
   return (
     <div className='flex justify-center items-center bg-orange-50 h-screen w-full m-auto border rounded-md
@@ -47,10 +65,10 @@ const LoginPage = () => {
         </div>
 
         <div className='form flex ml-20 m-auto flex-col gap-20'>
-        
+
           <div className='header text-[35px] text-black font-bold '>
             <h3>Welcome Back!</h3>
-           
+
           </div>
 
           <form action="" onSubmit={handleSubmit} className='form grid gap-6 '>
@@ -59,9 +77,9 @@ const LoginPage = () => {
               <label htmlFor="email" className='text-black pb-4  font-medium text-[25px]
               block'>Email</label>
               <div className='input text-[20px] '>
-                <input type="email" id='email' placeholder='Enter Email' name='email' onChange={handleInput} 
-                className='flex gap-3 rounded-md border-[2px] border-black pl-3 h-16 text-[20px] w-96 '  />
-                {errors.email && <span className='text-red-600'> {errors.email}</span> }
+                <input type="email" id='email' placeholder='Enter Email' name='email' onChange={handleInput}
+                  className='flex gap-3 rounded-md border-[2px] border-black pl-3 h-16 text-[20px] w-96 ' />
+                {errors.email && <span className='text-red-600'> {errors.email}</span>}
               </div>
             </div>
 
@@ -71,7 +89,7 @@ const LoginPage = () => {
               block'>Password</label>
               <div className='input text-[20px] '>
                 <input type="password" id='password' placeholder='Enter Password' name='password' onChange={handleInput} className='flex gap-3 rounded-md border-[2px] pl-3 border-black h-16 text-[20px] w-96' />
-                {errors.password && <span className='text-red-600'> {errors.password}</span> }
+                {errors.password && <span className='text-red-600'> {errors.password}</span>}
               </div>
             </div>
 
@@ -90,13 +108,13 @@ const LoginPage = () => {
 
         </div>
         <Link to='/'>
-        <FaHome className='w-12 h-8 mt-2 mr-2' />
+          <FaHome className='w-12 h-8 mt-2 mr-2' />
         </Link>
 
-        
+
 
       </div>
-      
+
 
     </div>
 
