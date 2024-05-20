@@ -1,10 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaSearch } from 'react-icons/fa'
 import { FaRegBell } from "react-icons/fa";
 import { FaEnvelope } from "react-icons/fa";
 import { MdAccountCircle } from "react-icons/md";
 
 const DashBoardView = () => {
+    const [open,setOpen] = useState(false)
+
+    const showDropDown =() =>{
+        setOpen(!open)
+    }
+
   return (
     <div className='flex items-center justify-between h-[75px] shadow-lg px-[25px]'>
         <div className='flex items-center pl-5 pt-0.5 text-[20px] '>
@@ -20,14 +26,24 @@ const DashBoardView = () => {
             <FaRegBell color='' className='w-[25px]  h-[40px]'/>
             <FaEnvelope className='w-[30px] h-[40px]'/>
             </div>
-            <div className='flex items-center gap-[15px] relative'>
+            <div onClick={showDropDown} className='flex items-center gap-[15px] relative'>
                 <p className='text-[20px]'>
                     Bawani Wandana
                 </p>
                 <div className='h-[50px] w-[50px] rounded-full bg-black
                 cursor-pointer flex items-center justify-center relative '>
-                <MdAccountCircle color='white' className='w-[40px] h-[40px]' />
+                <MdAccountCircle  color='white' className='w-[40px] h-[40px]' />
                 </div>
+
+                {
+                    open &&
+                    <div className='bg-white border h-[120px] w-[150px] absolute bottom-[135px]
+                    z-20 right-0 pt-[15px] pl-[15px] text-black space-y-[10px]'>
+                        <p className='cursor-pointer hover:text-b1 font-medium'>Profile</p>
+                        <p className='cursor-pointer hover:text-b1 font-medium'>Settings</p>
+                        <p className='cursor-pointer hover:text-b1 font-medium'>Log out</p>
+                    </div>
+                }
             </div>
         </div>
     </div>

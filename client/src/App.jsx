@@ -5,8 +5,8 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import CreateAccount from './pages/CreateAccount'
 import ProtectedData from './components/ProtectedData'
-
 import AdminInventory from './pages/AdminInventory'
+import Admindashboard from './pages/Admindashboard'
 
 const router = createBrowserRouter([
   {
@@ -29,10 +29,10 @@ const router = createBrowserRouter([
     path: '/protected',
     element: <ProtectedData />
   },
-  // {
-  //   path:'/dashboard',
-  //   element: 
-  // },
+  {
+    path:'/dashboard',
+    element: <Admindashboard/> 
+  },
   {
     path:'/inventory',
     element: <AdminInventory/>, 
