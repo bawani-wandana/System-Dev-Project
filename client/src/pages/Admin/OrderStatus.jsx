@@ -1,23 +1,26 @@
 import React from 'react'
-import SideBar from '../components/SideBar'
-import DashBoardView from '../components/DashBoardView'
+import SideBar from '../../components/SideBar'
+import DashBoardView from '../../components/DashBoardView'
+import DataTable from 'react-data-table-component'
 
-const AdminInventory = () => {
+const OrderStatus = () => {
+
+
+     
     return (
-        <div className='flex'>
+        <div className='flex font-[Lato]'>
             <div className='basis-[15%] h-[100vh]'>
                 <SideBar />
             </div>
             <div className='basis-[85%]'>
                 <DashBoardView />
-                <div className='text-[200px]'>
                 <div>
-                    <div></div>
+
                 </div>
-                </div>
+
             </div>
         </div>
     )
 }
 
-export default AdminInventory
+export default OrderStatus

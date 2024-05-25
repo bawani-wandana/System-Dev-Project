@@ -1,96 +1,120 @@
-const db = require('../config/databaseConnection');
-const bcrypt = require('bcrypt');
+
+const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-const { v4: uuidv4 } = require('uuid');
-
-const secretKey = process.env.JWT_SECRET;
-
-
-const createAccount = async (req, res) => {
-    const sql = "INSERT INTO user (`userID`,`userName`, `email`, `firstName`, `lastName`, `phoneNumber`, `password`, `confirmPassword`) VALUES (?)";
-
-    // check if the user already exists
-    const checkUserSql = "SELECT * FROM user WHERE `email` = ?";
-    db.query(checkUserSql, [email], async (err, results) => {
-        if (err) {
-            console.error('Error checking user existence:', err);
-            return res.status(500).json("Error");
-        }
-        if (results.length > 0) {
-            return res.status(400).json("User already exists");
-        }
+const {jwtConfig} = require('../config/jwt')
+const { createUser, createUserRole, checkUserByEmail, getUserByEmail } = require('../models/userModels')
+const { generateUserID } = require('../helpers/generateUserID')
 
 
-
-        try {
-            const hashedPassword = await bcrypt.hash(req.body.password, 10);
-            const values = [
-                uuidv4(),
-                req.body.username,
-                req.body.email,
-                req.body.firstname,
-                req.body.lastname,
-                req.body.phonenumber,
-                hashedPassword,
-                hashedPassword, //Storing hashed confirm password
-            ];
-
-            db.query(sql, [values], (err, data) => {
-                if (err) {
-                    console.error('Error creating account:', err);
-                    return res.json("Error");
-                }
-                return res.json(data);
-            });
-        } catch (err) {
-            console.error("Error hashing password:", err);
-            return res.status(500).json("Error");
-        }
-    });
-};
-
-const login = (req, res) => {
-    const sql = "SELECT * FROM user WHERE `email`=? AND `password`=?";
-    db.query(sql, [req.body.email, req.body.password], async (err, data) => {
-        if (err) {
-            console.error('Error during login:', err);
-            return res.json("Error");
-        }
-        if (data.length > 0) {
-            const user = data[0];
-            //Compare the hashed password
-            const isMatch = await bcrypt.compare(req.body.password, user.password);
-            if (isMatch) {
-                //Generate JWT
-                const token = jwt.sign({ id: user.id, email: user.email }, secretKey, { expiresIn: '1h' });
-                return res.json({ message: "success", token });
-            }
-            else {
-                return res.json("Fail");
-            }
-        } else {
-            return res.json("Fail");
-        }
-    });
-};
-
-
-const verifyToken = (req, res, next) => {
-    const token = req.headers['authorization'];
-    if (!token) {
-        return res.status(403).json("A token is required for authentication");
-    }
+exports.createAccount = async (req, res) => {
+    const { userName, firstName, lastName, email, phoneNumber, password } = req.body;
     try {
-        const decoded = jwt.verify(token, secretKey);
-        req.user = decoded;
+        checkUserByEmail(email, async (err, results) => {
+            if (err) {
+                console.error('Error checking user existence:', err);
+                return res.status(500).json("Error");
+            }
+            if (results.length > 0) {
+                return res.status(400).json("User already exists");
+            }
+            try {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                generateUserID(async (err, userID) => {
+                    if (err) {
+                        console.error('Error generating userID:', err);
+                        return res.status(500).json({ message: "Internal server error" });
+                    }
+
+                    const user = {
+                        userID,
+                        userName,
+                        firstName,
+                        lastName,
+                        email,
+                        phoneNumber,
+                        password: hashedPassword, //Storing hashed confirm password
+                    };
+
+                    createUser(user, (err, results) => {
+                        if (err) {
+                            console.error('Error creating account:', err);
+                            return res.status(500).json({ message: "Internal server error" });
+                        }
+                        const userTypeID = 3; //Assuming the initial userType as the Customer.
+
+                        createUserRole(userID, userTypeID, (err, results) => {
+                            if (err) {
+                                console.error("Error Assigning user role", err);
+                                return res.status(500).json({ message: "Internal server error" });
+                            }
+                            const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+                                expiresIn: jwtConfig.expiresIn,
+                            });
+                            return res.status(201).json({ message: "User Created successfullly", token });
+                        });
+                    });
+                });
+            } catch (err) {
+                console.error("Error hashing password:", err);
+                return res.status(500).json({ message: "Internal server Error" });
+            }
+        });
     } catch (err) {
-        return res.status(401).json("Invalid Token");
-    }
-    return next();
+        console.error("Error Checking existing user", err);
+        return res.status(500).json({ message: "Internal server error" });
+    };
 };
 
-module.exports = {
-    createAccount,
-    login,
-    verifyToken,
+
+//Login configuration
+exports.login = (req, res) => {
+    const { email, password } = req.body;
+
+
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
+
+    console.log(`Received login request for email: ${email}`);
+    console.log(`Received login request for email: ${password}`);
+
+    getUserByEmail(email, (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+
+        if (results.length === 0) {
+            return res.status(400).json({ message: 'Invalid credentials' });
+        }
+        const user = results[0];
+
+        bcrypt.compare(password, user.password, (err, isMatch) => {
+            if (err) return res.status(500).json({ message: 'Internal server error' });
+            console.log("BCrypt athule ane")
+            if (!isMatch) 
+                return res.status(400).json({ message: 'Invalid credentials' });
+            
+            console.log("Hari")
+            const token = jwt.sign(
+                {
+                    id: user.userID,
+                    email: user.email,
+                    userType: user.userType
+                },
+                jwtConfig.secret,
+                { expiresIn: jwtConfig.expiresIn }
+            );
+            console.log(token)
+            return res.json({ token });
+        });
+    });
 };
+
+
+
+
+// module.exports = {
+//     createAccount,
+//     login,
+// };

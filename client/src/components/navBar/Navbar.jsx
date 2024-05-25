@@ -40,23 +40,43 @@ const DropdownLinks = [
     },
     {
         id: 2,
+        name: "Short Stories",
+        link: "/shortstories",
+    },
+    {
+        id: 3,
         name: "Translations",
         link: "/translations",
     },
     {
-        id: 3,
-        name: "Short Stories",
-        link: "/short",
-    },
-    {
         id: 4,
-        name: "Grade 1-13",
-        link: "/grade1to13",
+        name: "Poetry",
+        link: "/poetry",
     },
     {
         id: 5,
+        name: "Children's",
+        link: "/children",
+    },
+    {
+        id: 6,
+        name: "Educational- Grade 1-13",
+        link: "/educational",
+    },
+    {
+        id: 7,
         name: "Stationery",
-        link: "/Stationery",
+        link: "/stationery",
+    },
+    {
+        id: 8,
+        name: "Papers",
+        link: "/papers",
+    },
+    {
+        id: 9,
+        name: "Others",
+        link: "/others",
     },
 ]
 const Navbar = () => {

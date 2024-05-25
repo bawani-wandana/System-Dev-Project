@@ -5,8 +5,12 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import CreateAccount from './pages/CreateAccount'
 import ProtectedData from './components/ProtectedData'
-import AdminInventory from './pages/AdminInventory'
-import Admindashboard from './pages/Admindashboard'
+import AdminInventory from './pages/Admin/AdminInventory'
+import Admindashboard from './pages/Admin/Admindashboard'
+import AddItems from './pages/Admin/AddItems'
+import OrderStatus from './pages/Admin/OrderStatus'
+import StaffHandling from './pages/Admin/StaffHandling'
+import StaffDashboard from './pages/Staff/StaffDashboard'
 
 const router = createBrowserRouter([
   {
@@ -36,6 +40,22 @@ const router = createBrowserRouter([
   {
     path:'/inventory',
     element: <AdminInventory/>, 
+  },
+  {
+    path:'/additems',
+    element: <AddItems/>, 
+  },
+  {
+    path:'/orderstatus',
+    element: <OrderStatus/>, 
+  },
+  {
+    path:'/staffhandling',
+    element: <StaffHandling/>, 
+  },
+  {
+    path:'/staffdashboard',
+    element: <StaffDashboard/>, 
   },
  
 ])

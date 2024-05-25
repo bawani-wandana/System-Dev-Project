@@ -8,19 +8,19 @@ function validation (values){
     
  
 
-    if (values.firstname === ""){
-        error.firstname =  "First Name should not be empty"
+    if (values.firstName === ""){
+        error.firstName =  "First Name should not be empty"
     }
     else {
-        error.firstname =""
+        error.firstName =""
     }
 
     
-    if (values.lastname === ""){
-        error.lastname =  "Last Name should not be empty"
+    if (values.lastName === ""){
+        error.lastName =  "Last Name should not be empty"
     }
     else {
-        error.lastname =""
+        error.lastName =""
     }
 
     if (values.email === ""){
@@ -32,22 +32,22 @@ function validation (values){
         error.email =""
     }
 
-    if (values.username === ""){
-        error.username =  "Username should not be empty"
+    if (values.userName === ""){
+        error.userName =  "UserName should not be empty"
     }
-    else if (!username_pattern.test(values.username)){
-        error.username = "Username is not valid"
+    else if (!username_pattern.test(values.userName)){
+        error.userName = "UserName is not valid"
     }else {
-        error.username =""
+        error.userName =""
     }
 
-    if (values.phonenumber === ""){
-        error.phonenumber =  "Phone Number should not be empty"
+    if (values.phoneNumber === ""){
+        error.phoneNumber =  "Phone Number should not be empty"
     }
-    else if (!phonenumber_pattern.test(values.phonenumber)){
-        error.phonenumber  = "Phone Numbe is not valid"
+    else if (!phonenumber_pattern.test(values.phoneNumber)){
+        error.phoneNumber  = "Phone Numbe is not valid"
     }else {
-        error.phonenumber  =""
+        error.phoneNumber  =""
     }
 
 

@@ -37,11 +37,11 @@ const DashBoardView = () => {
 
                 {
                     open &&
-                    <div className='bg-white border h-[120px] w-[150px] absolute bottom-[135px]
-                    z-20 right-0 pt-[15px] pl-[15px] text-black space-y-[10px]'>
-                        <p className='cursor-pointer hover:text-b1 font-medium'>Profile</p>
-                        <p className='cursor-pointer hover:text-b1 font-medium'>Settings</p>
-                        <p className='cursor-pointer hover:text-b1 font-medium'>Log out</p>
+                    <div className='bg-black border h-[150px] w-[160px] absolute  bottom-[100px]
+                    z-20 right-0 pt-4  top-[62px] text-[20px] rounded-md  text-white pl-[15px] space-y-[10px]'>
+                        <p className='cursor-pointer hover:text-orange-600 font-medium'>Profile</p>
+                        <p className='cursor-pointer hover:text-orange-600 font-medium'>Settings</p>
+                        <p className='cursor-pointer hover:text-orange-600 font-medium'>Log out</p>
                     </div>
                 }
             </div>

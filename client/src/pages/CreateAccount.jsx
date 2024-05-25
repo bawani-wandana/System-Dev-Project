@@ -2,16 +2,17 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import register from '../assets/register.png';
 import { FaHome } from "react-icons/fa";
-import validation from './CreateAccountValidation';
+import validation from '../pages/Validation/CreateAccountValidation';
+import axiosInstance from '../utils/axiosInstance';
 import axios from 'axios';
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
-    firstname: '',
-    lastname: '',
+    firstName: '',
+    lastName: '',
     email: '',
-    username: '',
-    phonenumber: '',
+    userName: '',
+    phoneNumber: '',
     password: '',
     confirmpassword: '',
   });
@@ -24,19 +25,18 @@ const CreateAccount = () => {
     setValues((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setErrors(validation(values));
-    if (errors.username==="" && errors.email === "" && errors.firstname === "" && errors.lastname === "" 
-      && errors.phonenumber === "" && errors.password === "" && errors.confirmpassword === ""
+    if (errors.userName==="" && errors.email === "" && errors.firstName === "" && errors.lastName === "" 
+      && errors.phoneNumber === "" && errors.password === "" && errors.confirmpassword === ""
     ){
-      axios.post('http://localhost:8081/api/createaccount', values)
+      axiosInstance.post('/createAccount', values)
       .then (res => {
         navigate('/loginpage')
       })
       .catch (err=> console.log(err));
     }
-
   };
 
   return (
@@ -64,32 +64,32 @@ const CreateAccount = () => {
           <form onSubmit={handleSubmit} className='form grid gap-4'>
             <div className='flex flex-col md:flex-row'>
               <div className='inputDiv w-full md:w-1/2 md:pr-2'>
-                <label htmlFor="firstname" className='text-black pb-2 font-medium text-[20px] block'>First Name</label>
+                <label htmlFor="firstName" className='text-black pb-2 font-medium text-[20px] block'>First Name</label>
                 <div className='input text-[20px]'>
                   <input
                     type="text"
-                    id='firstname'
-                    name='firstname'
+                    id='firstName'
+                    name='firstName'
                     placeholder='Enter First Name'
                     onChange={handleInput}
                     className='w-full rounded-md border-[2px] border-black pl-3 h-12 text-[20px]'
                   />
-                  {errors.firstname && <span className='text-red-600'>{errors.firstname}</span>}
+                  {errors.firstName && <span className='text-red-600'>{errors.firstName}</span>}
                 </div>
               </div>
 
               <div className='inputDiv w-full md:w-1/2 md:pl-2 mt-4 md:mt-0'>
-                <label htmlFor="lastname" className='text-black pb-2 font-medium text-[20px] block'>Last Name</label>
+                <label htmlFor="lastName" className='text-black pb-2 font-medium text-[20px] block'>Last Name</label>
                 <div className='input text-[20px]'>
                   <input
                     type="text"
-                    id='lastname'
-                    name='lastname'
+                    id='lastName'
+                    name='lastName'
                     placeholder='Enter Last Name'
                     onChange={handleInput}
                     className='w-full rounded-md border-[2px] border-black pl-3 h-12 text-[20px]'
                   />
-                  {errors.lastname && <span className='text-red-600'>{errors.lastname}</span>}
+                  {errors.lastName && <span className='text-red-600'>{errors.lastName}</span>}
                 </div>
               </div>
             </div>
@@ -110,32 +110,32 @@ const CreateAccount = () => {
             </div>
 
             <div className='inputDiv'>
-              <label htmlFor="username" className='text-black pb-2 font-medium text-[20px] block'>Username</label>
+              <label htmlFor="userName" className='text-black pb-2 font-medium text-[20px] block'>Username</label>
               <div className='input text-[20px]'>
                 <input
                   type="text"
-                  id='username'
-                  name='username'
+                  id='userName'
+                  name='userName'
                   onChange={handleInput}
                   placeholder='Enter Username'
                   className='w-full rounded-md border-[2px] border-black pl-3 h-12 text-[20px]'
                 />
-                {errors.username && <span className='text-red-600'>{errors.username}</span>}
+                {errors.userName && <span className='text-red-600'>{errors.userName}</span>}
               </div>
             </div>
 
             <div className='inputDiv'>
-              <label htmlFor="phonenumber" className='text-black pb-2 font-medium text-[20px] block'>Phone Number</label>
+              <label htmlFor="phoneNumber" className='text-black pb-2 font-medium text-[20px] block'>Phone Number</label>
               <div className='input text-[20px]'>
                 <input
                   type="tel"
-                  id='phonenumber'
-                  name='phonenumber'
+                  id='phoneNumber'
+                  name='phoneNumber'
                   onChange={handleInput}
                   placeholder='Enter Phone Number'
                   className='w-full rounded-md border-[2px] border-black pl-3 h-12 text-[20px]'
                 />
-                {errors.phonenumber && <span className='text-red-600'>{errors.phonenumber}</span>}
+                {errors.phoneNumber && <span className='text-red-600'>{errors.phoneNumber}</span>}
               </div>
             </div>
 
@@ -169,7 +169,7 @@ const CreateAccount = () => {
               </div>
             </div>
 
-            <button type='submit' className='btn rounded-md h-16 text-[25px] font-bold w-full mt-8 bg-c3 text-white hover:bg-black hover:text-white'>
+            <button type="submit" className='btn rounded-md h-16 text-[25px] font-bold w-full mt-8 bg-c3 text-white hover:bg-black hover:text-white'>
               <span>Create Account</span>
             </button>
           </form>

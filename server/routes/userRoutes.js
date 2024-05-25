@@ -1,14 +1,10 @@
 const express = require('express');
-const { createAccount, login , verifyToken} = require('../controllers/userController');
+const userController = require('../controllers/userController');
+
 
 const router = express.Router();
 
-router.post('/createaccount', createAccount);
-router.post('/login', login);
-
-router.get('/protected', verifyToken, (req, res) => {
-    res.json("This is a protected route");
-});
-
+router.post('/createAccount', userController.createAccount);
+router.post('/login', userController.login)
 
 module.exports = router;

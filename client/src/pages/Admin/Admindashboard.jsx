@@ -1,6 +1,6 @@
 import React from 'react'
-import SideBar from '../components/SideBar'
-import DashBoardView from '../components/DashBoardView'
+import SideBar from '../../components/SideBar'
+import DashBoardView from '../../components/DashBoardView'
 import { FaRegCalendarMinus } from "react-icons/fa";
 import { TbPackages } from "react-icons/tb";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, } from 'recharts';
@@ -106,7 +106,7 @@ const Admindashboard = () => {
                 <DashBoardView />
                 <div className='pt-[35px] px-[25px] bg-bray-100'>
                     <div className='flex items-center justify-between'>
-                        <h1 className='text-black text-[28px] leading-[14px] font-medium cursor-pointer'> Dashboard </h1>
+                        <h1 className='text-black text-[40px] leading-[14px] font-medium cursor-pointer'> Dashboard </h1>
                         <button className='bg-c3 h-[50px] rounded-md text-white flex items-center text-[20px] justify-center px-[30px] cursor-pointer'>Generate Reports</button>
                     </div>
                     {/* Earnings and Total orders */}
@@ -155,6 +155,7 @@ const Admindashboard = () => {
                                 </BarChart>
                             </div>
                         </div>
+                        {/* Line Chart */}
                         <div className='basis-[50%] border bg-orange-50 shadow-md cursor-pointer rounded-md'>
                             <div className='bg-b1 flex items-center justify-between py-[15px] px-[20px] border-b-[1px] border-gray-500 mb-[20px]'>
                                 <h2 className='text-[25px] text-white font-semibold'>Sales Overview</h2>

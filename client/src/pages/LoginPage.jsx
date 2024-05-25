@@ -1,44 +1,76 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import loginimage from '../assets/loginimage.png'
 import { Link, useNavigate } from 'react-router-dom'
 import { FaHome } from "react-icons/fa";
-import validation from './LoginValidation';
-import axios from 'axios';
+// import validation from '../pages/Validation/LoginValidation';
+import axiosInstance from '../utils/axiosInstance';
+import { ToastContainer, toast } from "react-toastify";
+import Axios from 'axios';
+import "react-toastify/dist/ReactToastify.css";
+import { jwtDecode } from 'jwt-decode';
 
 
 const LoginPage = () => {
-  const [values, setValues] = useState({
-    email: '',
-    password: ''
-  })
-
-
-  const [errors, setErrors] = useState({})
-
-  const handleInput = (event) => {
-    const { name, value } = event.target;
-    setValues({ ...values, [name]: value });
-  };
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
   const navigate = useNavigate();
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setErrors(validation(values));
 
-    if (errors.email === "" && errors.password === "") {
-      axios.post('http://localhost:8081/api/login', values)
-        .then(res => {
-          if (res.data === "success") {
-            // Store JWT token in localStorage
-            localStorage.setItem('token', res.data.token);
-            navigate('/');
-          } else {
-            alert("No record existed");
-          }
-        })
-        .catch(err => console.log(err));
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (!email || !password) {
+        toast.error("Please enter both email and password");
+        return;
+      }
+
+      const response = await Axios.post(
+        "http://localhost:8081/routes/login",
+        {
+          email,
+          password,
+        },
+      );
+
+
+      if (response.status === 200) {
+        const { token } = response.data;
+        const { userType } = jwtDecode(token);
+        localStorage.setItem("token", token);
+
+        setIsButtonClicked(true);
+        toast.success(`${userType}, Login Successful`);
+
+        setTimeout(() => {
+          if (userType === "Admin") {
+            navigate("/dashboard");
+          } if(userType=== "Staff"){
+            navigate("/staffdashboard");
+          }else {
+            navigate("/");
+          };
+        }, 3000); // Set a delay of 3 seconds before navigating
+      } else {
+        toast.error("Invalid Credentials");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("An error occurred during Login");
     }
   };
+
+  useEffect(() => {
+    let timer;
+    if (isButtonClicked) {
+      timer = setTimeout(() => {
+        // Redirect to home page after 5 seconds if the button was clicked
+        navigate("/"); // Redirect to homepage
+      }, 3000);
+    }
+    // Clear the timer when the component unmounts or when button is clicked again
+    return () => clearTimeout(timer);
+  }, [isButtonClicked, navigate]); // Include history in dependencies array
 
   return (
     <div className='flex justify-center items-center bg-orange-50 h-screen w-full m-auto border rounded-md
@@ -71,15 +103,19 @@ const LoginPage = () => {
 
           </div>
 
-          <form action="" onSubmit={handleSubmit} className='form grid gap-6 '>
+          <form onSubmit={handleLogin} className='form grid gap-6 '>
 
             <div className='inputDiv gap-4 bg-none'>
               <label htmlFor="email" className='text-black pb-4  font-medium text-[25px]
               block'>Email</label>
               <div className='input text-[20px] '>
-                <input type="email" id='email' placeholder='Enter Email' name='email' onChange={handleInput}
+                <input type="email"
+                  id='email'
+                  placeholder='Enter Email'
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className='flex gap-3 rounded-md border-[2px] border-black pl-3 h-16 text-[20px] w-96 ' />
-                {errors.email && <span className='text-red-600'> {errors.email}</span>}
+                {/* {errors.email && <span className='text-red-600'> {errors.email}</span>} */}
               </div>
             </div>
 
@@ -88,8 +124,11 @@ const LoginPage = () => {
               <label htmlFor="password" className='text-black pb-4 font-medium text-[25px]
               block'>Password</label>
               <div className='input text-[20px] '>
-                <input type="password" id='password' placeholder='Enter Password' name='password' onChange={handleInput} className='flex gap-3 rounded-md border-[2px] pl-3 border-black h-16 text-[20px] w-96' />
-                {errors.password && <span className='text-red-600'> {errors.password}</span>}
+                <input type="password" id='password'
+                value={password}
+                  placeholder='Enter Password'
+                  onChange={(e) => setPassword(e.target.value)} className='flex gap-3 rounded-md border-[2px] pl-3 border-black h-16 text-[20px] w-96' />
+                {/* {errors.password && <span className='text-red-600'> {errors.password}</span>} */}
               </div>
             </div>
 
@@ -115,7 +154,7 @@ const LoginPage = () => {
 
       </div>
 
-
+      <ToastContainer />
     </div>
 
 
@@ -125,4 +164,4 @@ const LoginPage = () => {
   )
 }
 
-export default LoginPage
+export default LoginPage;
