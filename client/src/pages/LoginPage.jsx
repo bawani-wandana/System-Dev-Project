@@ -44,9 +44,9 @@ const LoginPage = () => {
 
         setTimeout(() => {
           if (userType === "Admin") {
-            navigate("/dashboard");
+            navigate("/admindashboard");
           } if(userType=== "Staff"){
-            navigate("/staffdashboard");
+            navigate("/staffDashboard");
           }else {
             navigate("/");
           };

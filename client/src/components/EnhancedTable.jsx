@@ -57,7 +57,7 @@ function EnhancedTableHead(props) {
   };
 
   return (
-    <TableHead className='bg-b1 font-[Lato]' >
+    <TableHead className='bg-b1 font-[Lato] text-[30px]' >
       <TableRow className='bg-c3 text-white '>
         <TableCell padding="checkbox" >
           <Checkbox
@@ -250,7 +250,7 @@ function EnhancedTable({ rows, headCells }) {
               onRequestSort={handleRequestSort}
               rowCount={rows.length}
               headCells={headCells}
-              variant="h3"
+              variant="h1"
               className='text-xl'
             />
             <TableBody className='text-[30px]'>
@@ -259,7 +259,7 @@ function EnhancedTable({ rows, headCells }) {
                 const labelId = `enhanced-table-checkbox-${index}`;
 
                 return (
-                  <TableRow className='text-[30px]'
+                  <TableRow className='text-[40px]'
                     hover
                     onClick={(event) => handleClick(event, row.id)}
                     role="checkbox"

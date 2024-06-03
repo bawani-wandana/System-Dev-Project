@@ -11,6 +11,15 @@ import AddItems from './pages/Admin/AddItems'
 import OrderStatus from './pages/Admin/OrderStatus'
 import StaffHandling from './pages/Admin/StaffHandling'
 import StaffDashboard from './pages/Staff/StaffDashboard'
+import UserHandling from './pages/Admin/UserHandling'
+import CartPage from './pages/Customer/CartCheckoutPage'
+import CheckOut from './pages/Customer/CheckOut'
+import PaymentPage from './pages/Customer/PaymentPage'
+import OrderComplete from './pages/Customer/OrderComplete'
+import ItemsDisplayPage from './pages/Customer/ItemsDisplayPage'
+import { CartProvider } from './contexts/CartContext'
+import ProtectedRoute from './components/ProtectedRoute'
+import StaffOrderStatus from './pages/Staff/StaffOrderStatus'
 
 const router = createBrowserRouter([
   {
@@ -31,11 +40,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/protected',
-    element: <ProtectedData />
+    element: <ProtectedData />,
   },
   {
     path:'/dashboard',
-    element: <Admindashboard/> 
+    element:<ProtectedRoute component={Admindashboard} allowedRoles={['Admin']} />
   },
   {
     path:'/inventory',
@@ -57,6 +66,36 @@ const router = createBrowserRouter([
     path:'/staffdashboard',
     element: <StaffDashboard/>, 
   },
+  {
+    path:'/userhandling',
+    element: <UserHandling/>,
+  },
+  {
+    path:'/cartpage',
+    element: <CartPage/>,
+  },
+  {
+    path:'/checkout',
+    element: <CheckOut/>,
+  },
+  {
+    path:'/paymentpage',
+    element: <PaymentPage/>,
+  },
+  {
+    path:'/ordercomplete',
+    element: <OrderComplete/>,
+  },
+  {
+    path:'/itemsdisplay/:itemID',
+    element: <ItemsDisplayPage/>,
+  },
+  {
+    path:'/stafforderstatus',
+    element: <StaffOrderStatus/>,
+  },
+  
+  
  
 ])
 
@@ -67,7 +106,9 @@ function App() {
 
 
   return (
-    <RouterProvider router = {router}/>
+    <CartProvider>
+    <RouterProvider router={router} />
+  </CartProvider>
   )
 }
 

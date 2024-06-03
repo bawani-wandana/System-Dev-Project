@@ -39,20 +39,31 @@ const SideBar = () => {
           <p className='text-[18px] leading-[20px] font-medium text-white'>Add Items</p>
         </div>
       </Link>
-      <div className='flex items-center cursor-pointer gap-[15px] py-[20px] border-b-[1px]
+      <Link to='/orderstatus'>
+        <div className='flex items-center cursor-pointer gap-[15px] py-[20px] border-b-[1px]
         border-[#EDEDED]/[0.3]  '>
-        <LuPackage color='white' className='w-8 ml-5 h-10' />
-        <p className='text-[18px] leading-[20px] font-medium text-white'>Orders</p>
-      </div>
-     
-     <Link to='/staffhandling'>
-     <div className='flex items-center cursor-pointer gap-[15px] py-[20px] border-b-[1px]
-        border-[#EDEDED]/[0.3]  '>
-        <FaUserGroup color='white' className='w-8 ml-5 h-10' />
-        <p className='text-[18px] leading-[20px] font-medium text-white'>Manage Staff</p>
-      </div>
+          <LuPackage color='white' className='w-8 ml-5 h-10' />
+          <p className='text-[18px] leading-[20px] font-medium text-white'>Orders</p>
+        </div>
+      </Link>
 
-     </Link>
+      <Link to='/userhandling'>
+        <div className='flex items-center cursor-pointer gap-[15px] py-[20px] border-b-[1px]
+        border-[#EDEDED]/[0.3]  '>
+          <FaUserGroup color='white' className='w-8 ml-5 h-10' />
+          <p className='text-[18px] leading-[20px] font-medium text-white'>User Handling</p>
+        </div>
+
+      </Link>
+
+      <Link to='/staffhandling'>
+        <div className='flex items-center cursor-pointer gap-[15px] py-[20px] border-b-[1px]
+        border-[#EDEDED]/[0.3]  '>
+          <FaUserGroup color='white' className='w-8 ml-5 h-10' />
+          <p className='text-[18px] leading-[20px] font-medium text-white'>Manage Staff</p>
+        </div>
+
+      </Link>
 
 
 

@@ -19,14 +19,14 @@ const checkUserRole = (roles) => (req, res, next) => {
       return res.status(401).json({ message: 'Failed to authenticate token' });
     }
 
-    const { userType, userID} = decoded;
+    const { userType, userID, userTypeID} = decoded;
 
     if (!roles.includes(userType)) {
       return res.status(403).json({ message: 'Insufficient Privileges' });
     }
 
 
-    req.user = { userType, userID };
+    req.user = { userType, userID, userTypeID };
 
     next();
 
@@ -35,4 +35,4 @@ const checkUserRole = (roles) => (req, res, next) => {
 
 
 
-module.exports = { isAdmin: checkUserRole('Admin'), isStaff: checkUserRole('Staff'),};
+module.exports = { isAdmin: checkUserRole(['Admin']), isStaff: checkUserRole(['Staff']),};

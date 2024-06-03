@@ -1,4 +1,4 @@
-const db = require('../config/databaseConnection');
+const db = require ('../config/databaseConnection')
 
 const createUser = ( user, callback) => {
     const {
@@ -49,7 +49,9 @@ const createUser = ( user, callback) => {
       WHERE u.email = ?
     `;
     db.query(sql, [email], callback);
-    console.log("Check karanwa yakoww")
+
   };
 
+
+  
   module.exports = {createUser, createUserRole, checkUserByEmail, getUserByEmail}

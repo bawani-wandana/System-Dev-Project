@@ -1,7 +1,7 @@
 
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-const {jwtConfig} = require('../config/jwt')
+const { jwtConfig } = require('../config/jwt')
 const { createUser, createUserRole, checkUserByEmail, getUserByEmail } = require('../models/userModels')
 const { generateUserID } = require('../helpers/generateUserID')
 
@@ -91,30 +91,24 @@ exports.login = (req, res) => {
 
         bcrypt.compare(password, user.password, (err, isMatch) => {
             if (err) return res.status(500).json({ message: 'Internal server error' });
-            console.log("BCrypt athule ane")
-            if (!isMatch) 
+            if (!isMatch)
                 return res.status(400).json({ message: 'Invalid credentials' });
-            
-            console.log("Hari")
+
+
             const token = jwt.sign(
                 {
                     id: user.userID,
                     email: user.email,
-                    userType: user.userType
+                    userType: user.userType,
+                    userTypeID: user.userTypeID,
                 },
                 jwtConfig.secret,
                 { expiresIn: jwtConfig.expiresIn }
             );
-            console.log(token)
+
             return res.json({ token });
         });
     });
 };
 
 
-
-
-// module.exports = {
-//     createAccount,
-//     login,
-// };

@@ -4,7 +4,7 @@ import register from '../assets/register.png';
 import { FaHome } from "react-icons/fa";
 import validation from '../pages/Validation/CreateAccountValidation';
 import axiosInstance from '../utils/axiosInstance';
-import axios from 'axios';
+
 
 const CreateAccount = () => {
   const [values, setValues] = useState({
@@ -19,6 +19,7 @@ const CreateAccount = () => {
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});
+  
 
   const handleInput = (event) => {
     const { name, value } = event.target;

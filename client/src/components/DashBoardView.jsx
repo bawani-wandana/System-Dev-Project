@@ -28,7 +28,7 @@ const DashBoardView = () => {
             </div>
             <div onClick={showDropDown} className='flex items-center gap-[15px] relative'>
                 <p className='text-[20px]'>
-                    Bawani Wandana
+                    Welcome! , Admin
                 </p>
                 <div className='h-[50px] w-[50px] rounded-full bg-black
                 cursor-pointer flex items-center justify-center relative '>

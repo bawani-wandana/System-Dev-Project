@@ -1,0 +1,53 @@
+import React, { useState } from 'react'
+import { FaSearch } from 'react-icons/fa'
+import { FaRegBell } from "react-icons/fa";
+import { FaEnvelope } from "react-icons/fa";
+import { MdAccountCircle } from "react-icons/md";
+
+const DashBoardView = () => {
+    const [open,setOpen] = useState(false)
+
+    const showDropDown =() =>{
+        setOpen(!open)
+    }
+
+  return (
+    <div className='flex items-center justify-between h-[75px] shadow-lg px-[25px]'>
+        <div className='flex items-center pl-5 pt-0.5 text-[20px] '>
+            <input type="text" className='bg-gray-300 h-[50px] outline-none pl-[13px]
+            w-[500px] rounded-tl-md rounded-bl-md text-b1 placeholder:text-[20px]  leading-[20px] font-normal ' placeholder='Search for...'/>
+            <div className='bg-b1 h-[50px] px-[14px] flex items-center justify-center cursor-pointer rounded-br-md rounded-tr-md'>
+                <FaSearch color='white'/>
+            </div>
+
+        </div>
+        <div className='flex items-center gap-[15px] relative'>
+            <div className='flex items-center gap-[25px] border-r-[1px] pr-[25px]'>
+            <FaRegBell color='' className='w-[25px]  h-[40px]'/>
+            <FaEnvelope className='w-[30px] h-[40px]'/>
+            </div>
+            <div onClick={showDropDown} className='flex items-center gap-[15px] relative'>
+                <p className='text-[20px]'>
+                    Welcome! , Staff
+                </p>
+                <div className='h-[50px] w-[50px] rounded-full bg-black
+                cursor-pointer flex items-center justify-center relative '>
+                <MdAccountCircle  color='white' className='w-[40px] h-[40px]' />
+                </div>
+
+                {
+                    open &&
+                    <div className='bg-black border h-[150px] w-[160px] absolute  bottom-[100px]
+                    z-20 right-0 pt-4  top-[62px] text-[20px] rounded-md  text-white pl-[15px] space-y-[10px]'>
+                        <p className='cursor-pointer hover:text-orange-600 font-medium'>Profile</p>
+                        <p className='cursor-pointer hover:text-orange-600 font-medium'>Settings</p>
+                        <p className='cursor-pointer hover:text-orange-600 font-medium'>Log out</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+  )
+}
+
+export default DashBoardView
