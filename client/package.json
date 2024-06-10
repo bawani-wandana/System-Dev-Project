@@ -19,6 +19,8 @@
     "@mui/material": "^5.15.18",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "@reduxjs/toolkit": "^2.2.5",
+    "@stripe/react-stripe-js": "^2.7.1",
+    "@stripe/stripe-js": "^3.5.0",
     "axios": "^1.6.8",
     "firebase": "^10.12.1",
     "jwt-decode": "^4.0.0",

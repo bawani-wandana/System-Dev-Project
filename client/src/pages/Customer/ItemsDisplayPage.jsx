@@ -64,7 +64,7 @@ const ItemsDisplayPage = () => {
                         <p className={`mt-2 text-[22px] ${availabilityClass}`}>{availability}</p>
                         <p className="mt-2 text-[20px]">Author: {author}</p>
                         <p className="mt-2 text-[20px]">ISBN: {isbn}</p>
-                        <p className="mt-2 text-[20px]">Description: {description}</p>
+                        <p className="mt-2 w-[500px] justify-center text-[20px]">Description: {description}</p>
                     </div>
 
                     <div className="flex items-center gap-8 mt-8">

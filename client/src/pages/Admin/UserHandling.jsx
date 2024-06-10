@@ -18,8 +18,13 @@ const UserHandling = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosInstance.get('/getusers');
-        setUsersData(response.data);
+        const response = await axiosInstance.get('/getusersadmin');
+        console.log('Fetched users data:', response.data); // Debugging statement
+        if (Array.isArray(response.data)) {
+          setUsersData(response.data);
+        } else {
+          setError(new Error('Data format is incorrect, expected an array.'));
+        }
       } catch (error) {
         setError(error);
         console.error('Error fetching user data', error);

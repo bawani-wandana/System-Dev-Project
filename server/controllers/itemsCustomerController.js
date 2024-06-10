@@ -6,6 +6,7 @@ exports.getItems = (req, res) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to fetch items' });
         }
+        console.log('Items sent to frontend:', items);  // Log items before sending to frontend
         res.json(items);
     });
 };

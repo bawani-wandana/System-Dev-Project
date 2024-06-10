@@ -1,28 +1,8 @@
-import React from 'react'
-import SideBar from '../../components/SideBar'
-import DashBoardView from '../../components/DashBoardView'
-import Navbar from '../../components/navBar/Navbar'
-
-
-
-function getOrderStatus(status) {
-    switch (status) {
-        default:
-        case 'processing':
-            return (
-                <span className='py-2 px-5 rounded-md text-[18px] text-white bg-cyan-700'>
-                    {status.replaceAll('_', '').toUpperCase()}
-                </span>
-            )
-        case 'completed':
-            return (
-                <span className='py-2 px-5 rounded-md text-[18px] text-white bg-green-700'>
-                    {status.replaceAll('_', '').toUpperCase()}
-                </span>
-            )
-    }
-}
-
+import React, { useEffect, useState } from 'react';
+import SideBar from '../../components/SideBar';
+import DashBoardView from '../../components/DashBoardView';
+import Navbar from '../../components/navBar/Navbar';
+import axiosInstance from '../../utils/axiosInstance';
 
 function getPaymentStatus(status) {
     switch (status) {
@@ -32,61 +12,51 @@ function getPaymentStatus(status) {
                 <span className='py-2 px-5 rounded-md text-[18px] text-white bg-purple-700'>
                     {status.replaceAll('_', '').toUpperCase()}
                 </span>
-            )
+            );
         case 'paid':
             return (
                 <span className='py-2 px-5 rounded-md text-[18px] text-white bg-green-700'>
                     {status.replaceAll('_', '').toUpperCase()}
                 </span>
-            )
+            );
     }
 }
-
-
-function getDeliveryStatus(status) {
-    switch (status) {
-        default:
-        case 'not delivered':
-            return (
-                <span className='py-2 px-5 rounded-md text-[18px] text-white bg-red-700'>
-                    {status.replaceAll('_', '').toUpperCase()}
-                </span>
-            )
-        case 'delivered':
-            return (
-                <span className='py-2 px-5 rounded-md text-[18px] text-white bg-green-700'>
-                    {status.replaceAll('_', '').toUpperCase()}
-                </span>
-            )
-    }
-}
-
-const ordersdata = [
-    {
-        id: '1',
-        orderID: '',
-        orderDate: '',
-        orderType: '',
-        totalAmount: '',
-        orderStatus: 'processing',
-        firstName: '',
-        phoneNumber: '',
-        shippingAddress: '',
-        paymentType: '',
-        paymentDate: '',
-        paymentStatus: 'paid',
-        deliveryStatus: 'delivered',
-    }
-]
 
 const OrderStatus = () => {
+    const [ordersData, setOrdersData] = useState([]);
 
+    useEffect(() => {
+        axiosInstance.get('/ordersTable')
+            .then((response) => {
+                console.log('Fetched data:', response.data); // Log the fetched data
+                setOrdersData(response.data);
+            })
+            .catch(error => {
+                console.error('Error fetching orders:', error);
+            });
+    }, []);
+    
 
-
+    const handleStatusChange = (orderId, newStatus) => {
+        axiosInstance.put(`/orders/${orderId}/status`, { newStatus })
+            .then(response => {
+                setOrdersData(prevOrders => {
+                    return prevOrders.map(order => {
+                        if (order.orderID === orderId) {
+                            return { ...order, orderStatus: newStatus };
+                        }
+                        return order;
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+            });
+    };
     return (
         <div className='font-[Lato]'>
             <div>
-                <Navbar/>
+                <Navbar />
             </div>
             <div className='flex'>
                 <div className='basis-[15%] h-[100vh]'>
@@ -110,39 +80,47 @@ const OrderStatus = () => {
                                     <td className='px-4 py-2 text-center'>Payment Type</td>
                                     <td className='px-4 py-2 text-center'>Payment Date</td>
                                     <td className='px-4 py-2 text-center'>Payment Status</td>
-                                    <td className='px-4 py-2 text-center'>Delivery Status</td>
                                 </tr>
-
                             </thead>
                             <tbody >
-                                {ordersdata.map((order) => (
-                                    <tr key={order.id} className=''>
+                            {Array.isArray(ordersData) && ordersData.map((order) => (
+                                    <tr key={order.orderID} className=''>
                                         <td className='px-4 py-4 text-center'>{order.orderID}</td>
                                         <td className='px-4 py-4 text-center'>{order.orderDate}</td>
                                         <td className='px-4 py-4 text-center'>{order.orderType}</td>
                                         <td className='px-4 py-4 text-center'>{order.totalAmount}</td>
-                                        <td className='px-4 py-4 text-center'>{getOrderStatus(order.orderStatus)}</td>
+                                        <td className='px-4 py-4 text-center'>
+                                            <select
+                                                value={order.orderStatus}
+                                                onChange={(e) => handleStatusChange(order.orderID, e.target.value)}
+                                                className={`px-2 py-3 uppercase bg-blue-800 text-white rounded-md ${
+                                                    order.orderStatus === 'processing' ? 'bg-yellow-700' : 'bg-brown-800',
+                                                    order.orderStatus === 'completed' ? 'bg-green-700' :
+                                                    order.orderStatus === 'out for delivery' ? 'bg-pink-700' :
+                                                    order.orderStatus === 'delivered' ? 'bg-cyan-700' : ''
+                                                }`}
+                                            >
+                                                <option value="processing">Processing</option>
+                                                <option value="completed">Completed</option>
+                                                <option value="out for delivery">Out for Delivery</option>
+                                                <option value="delivered">Delivered</option>
+                                            </select>
+                                        </td>
                                         <td className='px-4 py-4 text-center'>{order.firstName}</td>
                                         <td className='px-4 py-4 text-center'>{order.phoneNumber}</td>
                                         <td className='px-4 py-4 text-center'>{order.shippingAddress}</td>
-                                        <td className='px-4 py-4 text-center'>{order.paymentType}</td>
+                                        <td className='px-4 py-4 text-center'>{order.paymentMethod}</td>
                                         <td className='px-4 py-4 text-center'>{order.paymentDate}</td>
                                         <td className='px-4 py-4 text-center'>{getPaymentStatus(order.paymentStatus)}</td>
-                                        <td className='px-4 py-4 text-center'>{getDeliveryStatus(order.deliveryStatus)}</td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
-
-
                 </div>
             </div>
-
-
         </div>
+    );
+};
 
-    )
-}
-
-export default OrderStatus
+export default OrderStatus;

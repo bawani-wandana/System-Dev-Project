@@ -8,7 +8,7 @@ const createUser = ( user, callback) => {
       firstName,
       lastName,
       phoneNumber,
-      password
+      password,
     } = user;
   
     const sqlCreateUser = `INSERT INTO users (userID, userName, email, firstName, lastName, phoneNumber, password)
@@ -22,7 +22,7 @@ const createUser = ( user, callback) => {
         firstName,
         lastName,
         phoneNumber,
-        password
+        password,
       ],
       callback
     );

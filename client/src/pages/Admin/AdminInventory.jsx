@@ -183,7 +183,7 @@ const AdminInventory = () => {
     const [isEditing, setIsEditing] = useState(false)
     const [selectedItem, setSelectedItem] = useState(null)
     const [isDeleting, setIsDeleting] = useState(false)
-    const [data, setData] = useState([]);
+    const [inventoryData, setInventoryData] = useState([]);
 
     useEffect(() => {
         fetchItems();
@@ -196,7 +196,7 @@ const AdminInventory = () => {
                 ...item,
                 stockStatus: calculateStockStatus(item.stockCount)
             }));
-            setData(itemsWithStockStatus);
+            setInventoryData(itemsWithStockStatus);
         } catch (error) {
             console.error('Error fetching items:', error);
         }
@@ -253,7 +253,7 @@ const AdminInventory = () => {
     };
 
     return (
-        <div className='font-[Lato]'>
+        <div className='font-[Lato] dark:bg-gray-900 '>
             <div >
                 <Navbar />
             </div>
@@ -282,8 +282,8 @@ const AdminInventory = () => {
                                 </tr>
                             </thead>
                             <tbody >
-                                {Array.isArray(data) && data.length > 0 ? (
-                                    data.map((item) => (
+                                {Array.isArray(inventoryData) && inventoryData.length > 0 ? (
+                                    inventoryData.map((item) => (
                                         <tr key={item.itemID} className='text-center '>
                                             <td className='py-2'>{item.itemID}</td>
                                             <td className='py-2'>{item.title}</td>

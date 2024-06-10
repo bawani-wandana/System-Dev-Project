@@ -6,6 +6,7 @@ const getCardItems =  (callback) => {
         if (err) {
             callback(err, null);
         } else {
+            console.log('Fetched items:', results);  // Log fetched items
             callback(null, results);
         }
     });

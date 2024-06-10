@@ -1,28 +1,50 @@
 import React, { useContext, useEffect } from 'react';
 import OrderSummary from '../components/OrderSummary';
-import { CartContext } from '../contexts/CartContext'; // Import CartContext
+import { CartContext } from '../contexts/CartContext';
+import { FaTrash } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../utils/axiosInstance';
 
 const ShoppingCart = ({ updateTotal }) => {
-    const { cart, setCart } = useContext(CartContext);
+    const { cart, fetchCart, updateItemQuantity, removeItemFromCart } = useContext(CartContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Calculate the subtotal whenever cart changes
-        const newSubtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-        updateTotal(newSubtotal); // Update the subtotal in the parent component
+        if (fetchCart) {
+            fetchCart();
+        }
+    }, [fetchCart]);
+
+    let subtotal = 0;
+
+    useEffect(() => {
+        subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        updateTotal(subtotal);
     }, [cart, updateTotal]);
 
-    const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
     const handleQuantityChange = (itemID, amount) => {
-        console.log("Item ID:", itemID);
-        console.log("Amount:", amount);
-        setCart((prevCart) =>
-            prevCart.map((item) =>
-                item.id === itemID
-                    ? { ...item, quantity: Math.max(1, item.quantity + amount) } // Ensure quantity doesn't go below 1
-                    : item
-            )
-        );
+        const item = cart.find(item => item.id === itemID);
+        const newQuantity = item.quantity + amount;
+        if (newQuantity > 0) {
+            updateItemQuantity(itemID, newQuantity);
+        }
+    };
+
+    const handleRemoveItem = async (itemID) => {
+        const item = cart.find(item => item.id === itemID);
+        const restockQuantity = item.quantity;
+
+        try {
+            await axiosInstance.put(`/restock`, { itemId: itemID, quantity: restockQuantity });
+            removeItemFromCart(itemID);
+            console.log('Item removed and restocked successfully');
+        } catch (error) {
+            console.error('Error removing item and restocking:', error);
+        }
+    };
+
+    const handleCheckout = () => {
+        navigate('/checkout');
     };
 
     return (
@@ -50,7 +72,7 @@ const ShoppingCart = ({ updateTotal }) => {
                                                     <span className="font-semibold">{item.name}</span>
                                                 </div>
                                             </td>
-                                            <td className="py-6 pr-8 text-[20px]">{typeof item.price === 'number' ? item.price.toFixed(2) : item.price}</td>
+                                            <td className="py-6 pr-8 text-[20px]">{Number(item.price).toFixed(2)}</td>
                                             <td className="py-6 text-[20px]">
                                                 <div className="flex items-center">
                                                     <button
@@ -69,6 +91,14 @@ const ShoppingCart = ({ updateTotal }) => {
                                                 </div>
                                             </td>
                                             <td className="py-6 text-[20px]">{(item.price * item.quantity).toFixed(2)}</td>
+                                            <td className="py-6 text-[20px]">
+                                                <button
+                                                    className="border bg-c3 text-white rounded-md py-3 px-4 ml-2"
+                                                    onClick={() => handleRemoveItem(item.id)}
+                                                >
+                                                    <FaTrash />
+                                                </button>
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -77,7 +107,12 @@ const ShoppingCart = ({ updateTotal }) => {
                     </div>
                     <div className="md:w-1/4 text-[20px]">
                         <OrderSummary subtotal={subtotal} showDetails={false} />
-                        <button className="bg-c3 text-white py-2 px-4 rounded-lg mt-4 w-full">Checkout</button>
+                        <button 
+                            className="bg-c3 text-white py-2 px-4 rounded-lg mt-4 w-full" 
+                            onClick={handleCheckout}
+                        >
+                            Checkout
+                        </button>
                     </div>
                 </div>
             </div>

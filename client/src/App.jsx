@@ -20,6 +20,8 @@ import ItemsDisplayPage from './pages/Customer/ItemsDisplayPage'
 import { CartProvider } from './contexts/CartContext'
 import ProtectedRoute from './components/ProtectedRoute'
 import StaffOrderStatus from './pages/Staff/StaffOrderStatus'
+import ProfilePage from './pages/ProfilePage'
+import CustomerOrder from './pages/Customer/CustomerOrder'
 
 const router = createBrowserRouter([
   {
@@ -93,6 +95,14 @@ const router = createBrowserRouter([
   {
     path:'/stafforderstatus',
     element: <StaffOrderStatus/>,
+  },
+  {
+    path:'/profilepage/:id',
+    element: <ProfilePage/>,
+  },
+  {
+    path:'/customerorders',
+    element: <CustomerOrder/>,
   },
   
   

@@ -2,12 +2,15 @@ import React, { useContext, useState, useEffect } from 'react'
 import logo from '../../assets/logo.png'
 import { IoMdSearch } from "react-icons/io";
 import DarkMode from '../navBar/DarkMode'
-import { Link } from 'react-router-dom';
+import { Link , useNavigate} from 'react-router-dom';
 import { FaCartShopping } from "react-icons/fa6";
 import { FaHeart } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
 import { CartContext } from '../../contexts/CartContext';
 import { getDecodedToken } from '../../services/jwtdecoder';
+import UserAccount from '../UserAccount';
+import {  toast } from "react-toastify";
+
 
 
 const Menu = [
@@ -83,6 +86,7 @@ const DropdownLinks = [
 const Navbar = () => {
     const { cart } = useContext(CartContext);
     const [userType, setUserType] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const token = localStorage.getItem('token'); // Adjust as per your token storage mechanism
@@ -94,7 +98,17 @@ const Navbar = () => {
         }
     }, []);
 
+    const handleLogout = () => {
+        const userTypeName = userType === 'Admin' ? 'Administrator' : userType === 'Staff' ? 'Staff' : 'User';
+        localStorage.removeItem('token');
+        setUserType(null);
+        navigate('/');
+        toast.success(`Logged out successfully! Goodbye, ${userTypeName}!`, {
+            position: toast.POSITION.TOP_CENTER,
+        });
+    };
 
+   
     return (
         <div className='w-full shadow-md bg-white dark:bg-gray-900 dark:text-white font-[lato]
         duration-200 '>
@@ -117,8 +131,8 @@ const Navbar = () => {
                     <div>
 
                     </div>
-                    <div className='flex justify-between gap-20'>
-                        <div className='flex gap-3 '>
+                    <div className='flex justify-between gap-4'>
+                        <div className='flex gap-4 '>
                             {/* cart and favorite*/}
 
                             {userType === 'Admin' || userType === 'Staff' ? (
@@ -135,7 +149,7 @@ const Navbar = () => {
                                     <span className='group-hover:block hidden transition-all duration-200 text-[17px] w-[30px]'> View</span>
                                     <FaCartShopping className='text-xl w-7 h-10 text-white drop-shadow-sm cursor-pointer' />
                                     {cart.length > 0 && (
-                                        <span className='absolute top-3 right-80 mr-60 bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center'>
+                                        <span className='absolute top-3 right-[480px] bg-red-600 text-white rounded-full w-8 h-8 flex items-center justify-center'>
                                             {cart.length}
                                         </span>
                                     )}
@@ -149,6 +163,11 @@ const Navbar = () => {
                         </div>
 
                         {/* Login and Create account */}
+                        {userType ? (
+                            <button onClick={handleLogout} className='bg-gradient-to-r from-red-600 to-red-400 rounded-lg w-[110px] h-12 text-[20px] text-white '>
+                                Logout
+                            </button>
+                        ) : (
                         <div className='flex gap-3 '>
                             <button className='border-4  border-b1 rounded-lg w-[150px] h-12 text-[18px] text-b1 font-bold '>
                                 <Link to='/CreateAccount'>Create Account</Link>
@@ -157,13 +176,17 @@ const Navbar = () => {
                                 <Link to='/LoginPage'>Login</Link>
                             </button>
                         </div>
+                        )}
                     </div>
 
 
 
                     {/* Darkmode switch */}
-                    <div className='mr-4 pl-4 '>
+                    <div className=' pl-3 '>
                         <DarkMode />
+                    </div>
+                    <div className='mr-5'>
+                        <UserAccount className='mr-3'/>
                     </div>
                 </div>
             </div>

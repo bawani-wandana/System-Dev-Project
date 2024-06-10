@@ -100,7 +100,7 @@ const data2 = [
 const Admindashboard = () => {
     return (
 
-        <div className='font-[Lato] ' >
+        <div className='font-[Lato] dark:bg-gray-900 ' >
             <div>
                 <Navbar />
             </div>
@@ -112,7 +112,7 @@ const Admindashboard = () => {
                     <DashBoardView />
                     <div className='pt-[35px] px-[25px] bg-bray-100'>
                         <div className='flex items-center justify-between'>
-                            <h1 className='text-black text-[40px] leading-[14px] font-medium cursor-pointer'> Dashboard </h1>
+                            <h1 className='text-black text-[40px] leading-[14px] font-medium cursor-pointer dark:text-white'> Dashboard </h1>
                             <button className='bg-c3 h-[50px] rounded-md text-white flex items-center text-[20px] justify-center px-[30px] cursor-pointer'>Generate Reports</button>
                         </div>
                         {/* Earnings and Total orders */}
