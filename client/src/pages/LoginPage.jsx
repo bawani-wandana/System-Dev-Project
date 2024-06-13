@@ -73,7 +73,7 @@ const LoginPage = () => {
   }, [isButtonClicked, navigate]); // Include history in dependencies array
 
   return (
-    <div className='flex justify-center items-center bg-orange-50 h-screen w-full m-auto border rounded-md
+    <div className='flex justify-center items-center dark:bg-gray-900 bg-orange-50 h-screen w-full m-auto border rounded-md
     overflow-hidden shadow-c3 font-[Lato]'>
       <div className='container flex h-3/4 w-3/5 m-auto justify-between
       rounded-[10px] bg-white'>

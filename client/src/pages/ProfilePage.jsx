@@ -106,7 +106,7 @@ const ProfilePage = () => {
     };
 
     return (
-        <div className=''>
+        <div className='dark:bg-gray-900'>
             <Navbar />
             <div className=''>
                 <CustomerProfileHeader />

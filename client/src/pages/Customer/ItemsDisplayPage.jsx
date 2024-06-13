@@ -43,7 +43,7 @@ const ItemsDisplayPage = () => {
     const availabilityClass = stockCount > 0 ? 'text-green-500' : 'text-red-500';
 
     return (
-        <div className='bg-blue-50'>
+        <div className='bg-blue-50 dark:bg-gray-900'>
             <Navbar />
             <div className='flex '>
                 <Link to='/'>

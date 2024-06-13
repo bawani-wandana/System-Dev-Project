@@ -44,7 +44,8 @@ const EditForm = ({ item, onClose, onSave }) => {
     const [isbn, setIsbn] = useState(item.isbn);
     const [description, setDescription] = useState(item.description);
     const [stockCount, setStockCount] = useState(item.stockCount)
-    const [price, setPrice] = useState(item.price)
+    const [price, setPrice] = useState(item.price);
+    const [threshold, setThreshold] = useState(item.threshold);
 
     const handleSubmit = (e) => {
         e.preventDefault()
@@ -56,6 +57,7 @@ const EditForm = ({ item, onClose, onSave }) => {
             author,
             isbn,
             description,
+            threshold,
         })
         onClose()
     }
@@ -92,6 +94,15 @@ const EditForm = ({ item, onClose, onSave }) => {
                             type='number'
                             value={stockCount}
                             onChange={(e) => setStockCount(e.target.value)}
+                            className='w-full px-3 py-2 border border-green-800 rounded-md'
+                        />
+                    </div>
+                    <div className='mb-4'>
+                        <label className='block text-[20px] text-gray-900'>Threshold</label>
+                        <input
+                            type='number'
+                            value={threshold}
+                            onChange={(e) => setThreshold(e.target.value)}
                             className='w-full px-3 py-2 border border-green-800 rounded-md'
                         />
                     </div>
@@ -194,7 +205,7 @@ const AdminInventory = () => {
             const response =await axiosInstance.get('/getitems');
             const itemsWithStockStatus = response.data.map(item => ({
                 ...item,
-                stockStatus: calculateStockStatus(item.stockCount)
+                stockStatus: calculateStockStatus(item.stockCount, item.threshold)
             }));
             setInventoryData(itemsWithStockStatus);
         } catch (error) {
@@ -203,15 +214,16 @@ const AdminInventory = () => {
     };
 
 
-    const calculateStockStatus = (stockCount) => {
+    const calculateStockStatus = (stockCount, threshold) => {
         if (stockCount === 0) {
             return 'out of stock';
-        } else if (stockCount < 5) {
+        } else if (stockCount <= threshold) {
             return 'low stock';
         } else {
             return 'in stock';
         }
     };
+
 
     const handleEditClick = (item) => {
         setSelectedItem(item)
@@ -277,6 +289,7 @@ const AdminInventory = () => {
                                     <td className='px-4 py-2 text-center'>Category</td>
                                     <td className='px-4 py-2 text-center'>Stock Count</td>
                                     <td className='px-4 py-2 text-center'>Price (Rs.) </td>
+                                    <td className='px-4 py-2 text-center'>Threshold</td>
                                     <td className='px-4 py-2 text-center'>Stock Status</td>
                                     <td className='px-4 py-2 text-center'>Actions</td>
                                 </tr>
@@ -290,6 +303,7 @@ const AdminInventory = () => {
                                             <td className='py-2'>{item.category}</td>
                                             <td className='py-2'>{item.stockCount}</td>
                                             <td className='py-2'>{item.price.toFixed(2)}</td>
+                                            <td className='py-2'>{item.threshold}</td>
                                             <td className='py-2'>{getStockStatus(item.stockStatus)}</td>
                                             <td className='py-2'>
                                                 <button

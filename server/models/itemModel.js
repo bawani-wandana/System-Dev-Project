@@ -2,7 +2,7 @@ const db = require('../config/databaseConnection');
 
 
 const addItem = (values, callback) => {
-    const sqlInsert = "INSERT INTO items (itemID, title, category, stockCount, price, imageUrl, author, isbn, description, userTypeID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    const sqlInsert = "INSERT INTO items (itemID, title, category, stockCount, price, imageUrl, author, isbn, description, userTypeID, threshold) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)";
     const preparedValues = values.map (value=> value === ''? null:value);
     db.query(sqlInsert, preparedValues, callback);
 };
@@ -11,7 +11,7 @@ const addItem = (values, callback) => {
 
 const getItems = (values, callback) => {
   try {
-      const sqlgetitems = `SELECT itemID, title, category, stockCount, price FROM items`;
+      const sqlgetitems = `SELECT itemID, title, category, stockCount, price,  threshold FROM items`;
       db.query (sqlgetitems, values, callback);
   } catch (error) {
       console.error("Error fetching items from database: ", error);
@@ -21,9 +21,9 @@ const getItems = (values, callback) => {
 
 const updateItem = async (item) => {
     try {
-      const { itemID, title, category, stockCount, price, author, isbn, description } = item;
-      const sqlUpdate = 'UPDATE items SET title = ?, category = ?, stockCount = ?, price = ?, author = ?, isbn = ?, description = ? WHERE itemID = ?';
-      const values = [title, category, stockCount, price, author, isbn, description, itemID];
+      const { itemID, title, category, stockCount, price, author, isbn, description, threshold } = item;
+      const sqlUpdate = 'UPDATE items SET title = ?, category = ?, stockCount = ?, price = ?, author = ?, isbn = ?, description = ?, threshold =? WHERE itemID = ?';
+      const values = [title, category, stockCount, price, author, isbn, description,threshold, itemID];
       const result = await db.query(sqlUpdate, values);
       return result;
     } catch (error) {
@@ -42,6 +42,9 @@ const updateItem = async (item) => {
       throw error;
     }
   };
+
+
+  
 
 module.exports = {
     addItem,

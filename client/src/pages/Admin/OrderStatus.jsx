@@ -54,7 +54,7 @@ const OrderStatus = () => {
             });
     };
     return (
-        <div className='font-[Lato]'>
+        <div className='font-[Lato] dark:bg-gray-900'>
             <div>
                 <Navbar />
             </div>

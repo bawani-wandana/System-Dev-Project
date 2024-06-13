@@ -26,7 +26,7 @@ const UserAccount = () => {
     setOpen(!open)
   }
 
-  console.log(userId);
+  // console.log(userId);
 
   return (
     <div>

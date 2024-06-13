@@ -61,7 +61,7 @@ const CartPage = () => {
 
 
     return (
-        <div className='bg-blue-100'>
+        <div className='bg-blue-100 dark:bg-gray-900'>
             <Navbar />
             <div className='md:w-3/4 mt-14 mx-auto shadow-xl rounded-2xl pt-4 pb-2 bg-white'>
                 {/* Stepper */}

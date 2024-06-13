@@ -22,6 +22,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import StaffOrderStatus from './pages/Staff/StaffOrderStatus'
 import ProfilePage from './pages/ProfilePage'
 import CustomerOrder from './pages/Customer/CustomerOrder'
+import CategoriesPage from './pages/CategoriesPage'
 
 const router = createBrowserRouter([
   {
@@ -102,9 +103,12 @@ const router = createBrowserRouter([
   },
   {
     path:'/customerorders',
-    element: <CustomerOrder/>,
+    element:<ProtectedRoute component={CustomerOrder} allowedRoles={['Customer']} />
   },
-  
+  {
+    path:'/categories/:category',
+    element: <CategoriesPage/>,
+  },
   
  
 ])

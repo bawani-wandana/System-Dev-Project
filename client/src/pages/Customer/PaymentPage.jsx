@@ -2,7 +2,8 @@ import React from 'react'
 
 const PaymentPage = () => {
   return (
-    <div>PaymentPage</div>
+    <div className='dark:bg-gray-900'>
+      PaymentPage</div>
   )
 }
 

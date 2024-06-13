@@ -41,7 +41,7 @@ const CreateAccount = () => {
   };
 
   return (
-    <div className='flex flex-col md:flex-row justify-center items-center w-full min-h-screen bg-orange-50 border rounded-md overflow-hidden shadow-c3 font-[Lato]'>
+    <div className='flex flex-col dark:bg-gray-900 md:flex-row justify-center items-center w-full min-h-screen bg-orange-50 border rounded-md overflow-hidden shadow-c3 font-[Lato]'>
       <div className='container flex flex-col md:flex-row h-full w-full justify-between bg-white rounded-[10px]'>
         <div className='relative flex flex-col basis-full md:basis-1/2 '>
           <img src={register} alt="Register" className='absolute h-full w-full object-cover' />

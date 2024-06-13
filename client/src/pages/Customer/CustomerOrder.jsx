@@ -85,7 +85,7 @@ useEffect(() => {
 
 
     return (
-        <div>
+        <div className='dark:bg-gray-900'>
             <div>
                 <Navbar />
                 <CustomerProfileHeader />

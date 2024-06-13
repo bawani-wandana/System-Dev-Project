@@ -34,6 +34,7 @@ const AddItems = () => {
         isbn: '',
         description: '',
         userTypeID: '',
+        threshold:'',
     });
 
     const handleImageChange = (e) => {
@@ -85,6 +86,11 @@ const AddItems = () => {
             toast.error('Image is required');
         }
 
+        if (!threshold) {
+            newErrors.threshold = 'Threshold  is required';
+            toast.error('Threshold is required');
+        }
+
         return newErrors;
     };
 
@@ -126,6 +132,7 @@ const AddItems = () => {
                     isbn: '',
                     description: '',
                     userTypeID: '',
+                    threshold:'',
                 });
             });
         }
@@ -150,7 +157,7 @@ const AddItems = () => {
 
 
     return (
-        <div className=' flex-col md:flex-row bg-[#fdf1e0] font-[Lato]'>
+        <div className=' flex-col md:flex-row dark:bg-gray-900 bg-[#fdf1e0] font-[Lato]'>
             <div>
                 <Navbar/>
             </div>
@@ -230,6 +237,15 @@ const AddItems = () => {
                                             <textarea id='description' name='description' value={items.description} onChange={handleChange} placeholder='Type here' rows='4' className='w-[650px] h-24 rounded-md border-[2px] border-black pl-3  text-[20px]' >
                                             </textarea>
                                         </div>
+                                    </div>
+                                </div>
+
+
+                                <div className='ml-7 pl-4 mt-6'>
+                                    <label htmlFor="threshold" className='text-[20px]'>Threshold Value</label>
+                                    <div className='pt-3'>
+                                        <input type="number" id="threshold" name="threshold" placeholder="Please enter a threshold value" value={items.threshold} onChange={handleChange} className={`w-[650px] rounded-md border-[2px] border-black pl-3 h-14 text-[20px] ${errors.threshold ? 'border-red-500' : ''}`} />
+                                        {errors.threshold && <p className="text-red-500 text-lg italic">{errors.threshold}</p>}
                                     </div>
                                 </div>
 

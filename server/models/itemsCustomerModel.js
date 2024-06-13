@@ -1,12 +1,11 @@
 const db = require('../config/databaseConnection');
 
-const getCardItems =  (callback) => {
+const getCardItems = (callback) => {
     const query = 'SELECT itemID, title, stockCount, price, imageUrl, author, isbn, description FROM items';
     db.query(query, (err, results) => {
         if (err) {
             callback(err, null);
         } else {
-            console.log('Fetched items:', results);  // Log fetched items
             callback(null, results);
         }
     });
@@ -18,12 +17,25 @@ const getItemByID = (itemID, callback) => {
         if (err) {
             callback(err, null);
         } else {
-            callback(null, results[0]);  // results[0] to get the single item
+            callback(null, results[0]);
         }
-    });    };
+    });
+};
 
+const searchItems = (query, callback) => {
+    const searchTerm = `%${query}%`;
+    const sql = 'SELECT * FROM items WHERE title LIKE ? OR author LIKE ?';
+    db.query(sql, [searchTerm, searchTerm], (err, results) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            callback(null, results);
+        }
+    });
+};
 
-
-module.exports ={
-    getCardItems, getItemByID
+module.exports = {
+    getCardItems,
+    getItemByID,
+    searchItems,
 };

@@ -2,7 +2,7 @@ const { addItem, getItems ,updateItem , deleteItem } = require('../models/itemMo
 const generateItemID = require('../helpers/generateItemID')
 
 exports.addItem = async (req, res) => {
-    const { title, category, stockCount, price, imageUrl,  author, isbn,description, userTypeID } = req.body;
+    const { title, category, stockCount, price, imageUrl,  author, isbn,description, userTypeID, threshold } = req.body;
 
     try {
         // Generate new item ID
@@ -13,7 +13,7 @@ exports.addItem = async (req, res) => {
             }
 
             // Check if all required fields are provided
-            if (!title || !category || !stockCount || !price || !imageUrl) {
+            if (!title || !category || !stockCount || !price || !imageUrl || !threshold) {
                 return res.status(400).json({ error: 'All required fields must be filled' });
             }
 
@@ -29,6 +29,7 @@ exports.addItem = async (req, res) => {
                 isbn || '',
                 description || '',
                 userTypeID,
+                threshold,
                  // Assuming userTypeID is stored in the JWT token
             ];
 

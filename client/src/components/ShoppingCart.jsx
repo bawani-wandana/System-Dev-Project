@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import OrderSummary from '../components/OrderSummary';
 import { CartContext } from '../contexts/CartContext';
 import { FaTrash } from 'react-icons/fa';
@@ -6,27 +6,33 @@ import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
 
 const ShoppingCart = ({ updateTotal }) => {
-    const { cart, fetchCart, updateItemQuantity, removeItemFromCart } = useContext(CartContext);
+    const { cart, addItemToCart, updateItemQuantity, removeItemFromCart } = useContext(CartContext);
     const navigate = useNavigate();
+    const [subtotal, setSubtotal] = useState(0);
 
     useEffect(() => {
-        if (fetchCart) {
-            fetchCart();
+        if (addItemToCart) {
+            addItemToCart();
         }
-    }, [fetchCart]);
+    }, [addItemToCart]);
 
-    let subtotal = 0;
 
     useEffect(() => {
-        subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-        updateTotal(subtotal);
+        const calculatedSubtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+        setSubtotal(calculatedSubtotal);
+        updateTotal(calculatedSubtotal);
     }, [cart, updateTotal]);
 
-    const handleQuantityChange = (itemID, amount) => {
+    const handleQuantityChange = async (itemID, amount) => {
         const item = cart.find(item => item.id === itemID);
         const newQuantity = item.quantity + amount;
         if (newQuantity > 0) {
-            updateItemQuantity(itemID, newQuantity);
+            try {
+                await axiosInstance.post('/cart/updateQuantity', { itemId: itemID, quantity: newQuantity });
+                updateItemQuantity(itemID, newQuantity);
+            } catch (error) {
+                console.error('Error updating item quantity:', error);
+            }
         }
     };
 
@@ -35,6 +41,7 @@ const ShoppingCart = ({ updateTotal }) => {
         const restockQuantity = item.quantity;
 
         try {
+            await axiosInstance.post('/cart/remove', { itemId: itemID });
             await axiosInstance.put(`/restock`, { itemId: itemID, quantity: restockQuantity });
             removeItemFromCart(itemID);
             console.log('Item removed and restocked successfully');
@@ -68,8 +75,8 @@ const ShoppingCart = ({ updateTotal }) => {
                                         <tr key={item.id}>
                                             <td className="py-6 text-[20px]">
                                                 <div className="flex items-center">
-                                                    <img className="h-16 w-16 mr-4" src={item.image} alt={item.name} />
-                                                    <span className="font-semibold">{item.name}</span>
+                                                    <img className="h-16 w-16 mr-4" src={item.imageUrl} alt={item.title} />
+                                                    <span className="font-semibold">{item.title}</span>
                                                 </div>
                                             </td>
                                             <td className="py-6 pr-8 text-[20px]">{Number(item.price).toFixed(2)}</td>

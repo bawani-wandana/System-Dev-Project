@@ -82,7 +82,7 @@ const CheckOut = ({ totalWithoutShipping }) => {
 
 
   return (
-    <div className='container text-[20px] pl-24 pt-12 flex bg-white font-[Lato] font-semibold'>
+    <div className='container text-[20px] pl-24 pt-12 dark:bg-gray-900 flex bg-white font-[Lato] font-semibold'>
       <div className='w-[1500px] rounded-md  bg-c4'>
         <div className='pt-4'>
           <h2 className='text-c3 pl-10 text-[24px]'>Billing Details</h2>

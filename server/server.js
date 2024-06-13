@@ -13,6 +13,7 @@ const orderDetailsRoutes = require ('./routes/orderDetailsRoutes')
 require ('dotenv').config();
 const db = require ('./config/databaseConnection');
 const restockRoutes = require('./routes/restockRoutes');
+const itemsCategoryRoutes = require('./routes/itemsCategoryRoutes')
 
 const PORT = process.env.PORT
 const app = express();
@@ -27,10 +28,11 @@ app.use("/routes", itemRoutes);
 app.use("/routes",itemsCustomerRoutes);
 app.use ("/routes", userManageRoutes);
 app.use("/routes", staffHandlingRoutes);
-// app.use("/routes", cartRoutes);
+app.use("/routes", cartRoutes);
 app.use("/routes", restockRoutes);
 app.use("/routes", orderRoutes );
 // app.use("/routes", orderDetailsRoutes);
+app.use("/routes", itemsCategoryRoutes);
 
 app.listen(PORT, () => {
     console.log("Server is listening on port 8081");

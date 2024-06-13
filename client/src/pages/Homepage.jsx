@@ -7,9 +7,6 @@ import ItemList from '../components/ItemList';
 
 
 
-
-
-
 const Homepage = () => {
     return (
         <div className='dark:bg-gray-900 bg-gray-200'>

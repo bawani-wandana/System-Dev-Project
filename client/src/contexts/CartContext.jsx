@@ -5,34 +5,40 @@ import { getDecodedToken } from '../services/jwtdecoder';
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
+    const decodedToken = getDecodedToken();
     const [cart, setCart] = useState([]);
-    const user = getDecodedToken();
+    const userId = decodedToken?.id;
     const [timeouts, setTimeouts] = useState({});
 
+    useEffect(() => {
+        if (userId) {
+            loadCartItems(userId);
+        }
+    }, [userId]);
+
+    const loadCartItems = async (userId) => {
+        try {
+            const response = await axiosInstance.get(`/cart/${userId}`);
+            setCart(response.data);
+            console.log(response.data)
+        } catch (error) {
+            console.error('Error fetching cart items:', error);
+        }
+    };
+
     const addItemToCart = async (item) => {
-        if (!user) {
+        if (!userId) {
             console.error('User not authenticated');
             return;
         }
 
         try {
-            const response = await axiosInstance.post('/addtocart', {
+            const response = await axiosInstance.post('/cart', {
+                userID: userId,
                 itemID: item.id,
-                quantity: 1,
             });
 
-            setCart((prevCart) => {
-                const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
-                if (existingItem) {
-                    return prevCart.map(cartItem =>
-                        cartItem.id === item.id
-                            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-                            : cartItem
-                    );
-                } else {
-                    return [...prevCart, { ...item, quantity: 1 }];
-                }
-            });
+            loadCartItems(userId);
 
             if (timeouts[item.id]) {
                 clearTimeout(timeouts[item.id]);
@@ -40,23 +46,12 @@ export const CartProvider = ({ children }) => {
 
             const timeoutId = setTimeout(async () => {
                 try {
-                    await axiosInstance.post('/removeexpired', {
+                    await axiosInstance.post('/cart/remove', {
+                        userID: userId,
                         itemID: item.id,
                     });
 
-                    setCart((prevCart) => {
-                        const existingItem = prevCart.find(cartItem => cartItem.id === item.id);
-                        if (existingItem && existingItem.quantity === 1) {
-                            return prevCart.filter(cartItem => cartItem.id !== item.id);
-                        } else if (existingItem) {
-                            return prevCart.map(cartItem =>
-                                cartItem.id === item.id
-                                    ? { ...cartItem, quantity: cartItem.quantity - 1 }
-                                    : cartItem
-                            );
-                        }
-                        return prevCart;
-                    });
+                    loadCartItems(userId);
                 } catch (error) {
                     console.error('Error removing expired item from cart:', error);
                 }
@@ -71,25 +66,23 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    const updateItemQuantity = async (itemID, quantity) => {
-        if (!user) {
+    const updateItemQuantity = async (cartDetailID, newQuantity, itemID, originalQuantity) => {
+        if (!userId) {
             console.error('User not authenticated');
             return;
         }
 
         try {
-            await axiosInstance.post('/updateitemquantity', {
+            console.log(itemID)
+            await axiosInstance.post('/cart/updateQuantity', {
+                userID: userId,
+                cartDetailID,
+                newQuantity,
                 itemID,
-                quantity,
+                originalQuantity,
             });
 
-            setCart((prevCart) =>
-                prevCart.map((item) =>
-                    item.id === itemID
-                        ? { ...item, quantity }
-                        : item
-                )
-            );
+            loadCartItems(userId);
 
             if (timeouts[itemID]) {
                 clearTimeout(timeouts[itemID]);
@@ -97,23 +90,12 @@ export const CartProvider = ({ children }) => {
 
             const timeoutId = setTimeout(async () => {
                 try {
-                    await axiosInstance.post('/removeexpired', {
+                    await axiosInstance.post('/cart/remove', {
+                        userID: userId,
                         itemID,
                     });
 
-                    setCart((prevCart) => {
-                        const existingItem = prevCart.find(cartItem => cartItem.id === itemID);
-                        if (existingItem && existingItem.quantity === 1) {
-                            return prevCart.filter(cartItem => cartItem.id !== itemID);
-                        } else if (existingItem) {
-                            return prevCart.map(cartItem =>
-                                cartItem.id === itemID
-                                    ? { ...cartItem, quantity: cartItem.quantity - 1 }
-                                    : cartItem
-                            );
-                        }
-                        return prevCart;
-                    });
+                    loadCartItems(userId);
                 } catch (error) {
                     console.error('Error removing expired item from cart:', error);
                 }
@@ -128,15 +110,26 @@ export const CartProvider = ({ children }) => {
         }
     };
 
-    const removeItemFromCart = (itemID) => {
-        const itemIndex = cart.findIndex(item => item.id === itemID);
-        if (itemIndex !== -1) {
-            setCart(prevCart => prevCart.filter(item => item.id !== itemID));
-            console.log('Item removed successfully');
-        } else {
-            console.error('Cart ID not found for item');
+    const removeItemFromCart = async (cartDetailID, itemID, quantity) => {
+        if (!userId) {
+            console.error('User not authenticated');
+            return;
+        }
+
+        try {
+            await axiosInstance.post('/cart/remove', {
+                userID: userId,
+                cartDetailID,
+                itemID,
+                quantity,
+            });
+
+            loadCartItems(userId);
+        } catch (error) {
+            console.error('Error removing item from cart:', error);
         }
     };
+
     return (
         <CartContext.Provider value={{ cart, addItemToCart, updateItemQuantity, removeItemFromCart }}>
             {children}
