@@ -3,6 +3,7 @@ import banner from '../assets/banner.png'
 import Slider from "react-slick";
 import mandog from '../assets/mandog.png'
 import booktree from '../assets/booktree.png'
+import { Link } from 'react-router-dom';
 
 
 const ImageList = [
@@ -63,10 +64,13 @@ const HomeBanner = () => {
                   >{data.title} </h1>
                   <p className='text-[25px] uppercase text-c3'>{data.Description}</p>
                   <div>
+                    <Link to='/categories/:category'>
                     <button className='bg-gradient-to-r from-blue-600 to-b1 w-[200px]
                              h-16 hover:scale-105 duration-200 text-[24px] text-white py-2 px-4 rounded-md'>
                       Explore More
                     </button>
+                    </Link>
+                   
                   </div>
                 </div>
                 {/* image section */}
