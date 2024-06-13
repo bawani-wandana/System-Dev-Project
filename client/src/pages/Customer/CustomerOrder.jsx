@@ -68,20 +68,20 @@ const CustomerOrder = () => {
     const decodedToken = getDecodedToken();
     const [customerOrders, setCustomerOrders] = useState([]);
 
-const userId = decodedToken?.id;
+    const userId = decodedToken?.id;
 
-useEffect(() => {
-    // Fetch data from the backend when the component mounts
-    axiosInstance
-      .get(`/userOrders?userId=${userId}`) // Assuming your backend endpoint is /api/stocks
-      .then((response) => {
-        console.log(response.data);
-        setCustomerOrders(response.data); // Update the state with fetched data
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-  }, [userId]);
+    useEffect(() => {
+        // Fetch data from the backend when the component mounts
+        axiosInstance
+            .get(`/userOrders?userId=${userId}`) // Assuming your backend endpoint is /api/stocks
+            .then((response) => {
+                console.log(response.data);
+                setCustomerOrders(response.data); // Update the state with fetched data
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    }, [userId]);
 
 
     return (
@@ -90,48 +90,48 @@ useEffect(() => {
                 <Navbar />
                 <CustomerProfileHeader />
             </div>
-                <div className='flex'>
-                    <div className='basis-[20%] '>
-                        <CustomerProfileSideBar />
-                        </div>
-                        <div className='basis-[80%] '>
-                        <h2 className='text-black font-bold ml-5 mt-5 text-[30px] uppercase'>Orders</h2>
-                        <div className='bg-c4  px-4 pt-5 mt-10 ml-5 mr-5 rounded-md border justify-between border-gray-600 flex '>
-                            <table className='flex-col w-full '>
-                                <thead className=' bg-c3 text-white text-[20px] '>
-                                    <tr className=''>
-                                        <td className='px-4 py-2 text-center'>Order ID</td>
-                                        <td className='px-4 py-2 text-center'>Order Date</td>
-                                        <td className='px-4 py-2 text-center'>Order Type</td>
-                                        <td className='px-4 py-2 text-center'>Total Amount</td>
-                                        <td className='px-4 py-2 text-center'>Order Status</td>
-                                        <td className='px-4 py-2 text-center'>Payment Type</td>
-                                        <td className='px-4 py-2 text-center'>Payment Date</td>
-                                        <td className='px-4 py-2 text-center'>Payment Status</td>
+            <div className='flex'>
+                <div className='basis-[20%] '>
+                    <CustomerProfileSideBar />
+                </div>
+                <div className='basis-[80%] '>
+                    <h2 className='text-black font-bold ml-5 mt-5 text-[30px] uppercase'>Orders</h2>
+                    <div className='bg-c4  px-4 pt-5 mt-10 ml-5 mr-5 rounded-md border justify-between border-gray-600 flex '>
+                        <table className='flex-col w-full '>
+                            <thead className=' bg-c3 text-white text-[20px] '>
+                                <tr className=''>
+                                    <td className='px-4 py-2 text-center'>Order ID</td>
+                                    <td className='px-4 py-2 text-center'>Order Date</td>
+                                    <td className='px-4 py-2 text-center'>Order Type</td>
+                                    <td className='px-4 py-2 text-center'>Total Amount</td>
+                                    <td className='px-4 py-2 text-center'>Order Status</td>
+                                    <td className='px-4 py-2 text-center'>Payment Type</td>
+                                    <td className='px-4 py-2 text-center'>Payment Date</td>
+                                    <td className='px-4 py-2 text-center'>Payment Status</td>
+                                </tr>
+
+                            </thead>
+                            <tbody >
+                                {customerOrders.map((cOrder) => (
+                                    <tr key={cOrder.id} className=''>
+                                        <td className='px-4 py-4 text-center'>{cOrder.orderID}</td>
+                                        <td className='px-4 py-4 text-center'>{cOrder.orderDate}</td>
+                                        <td className='px-4 py-4 text-center'>{cOrder.orderType}</td>
+                                        <td className='px-4 py-4 text-center'>{cOrder.totalAmount}</td>
+                                        <td className='px-4 py-4 text-center'>{getOrderStatus(cOrder.orderStatus)}</td>
+                                        <td className='px-4 py-4 text-center'>{cOrder.paymentMethod}</td>
+                                        <td className='px-4 py-4 text-center'>{cOrder.paymentDate}</td>
+                                        <td className='px-4 py-4 text-center'>{getPaymentStatus(cOrder.paymentStatus)}</td>
                                     </tr>
-
-                                </thead>
-                                <tbody >
-                                    {customerOrders.map((cOrder) => (
-                                        <tr key={cOrder.id} className=''>
-                                            <td className='px-4 py-4 text-center'>{cOrder.orderID}</td>
-                                            <td className='px-4 py-4 text-center'>{cOrder.orderDate}</td>
-                                            <td className='px-4 py-4 text-center'>{cOrder.orderType}</td>
-                                            <td className='px-4 py-4 text-center'>{cOrder.totalAmount}</td>
-                                            <td className='px-4 py-4 text-center'>{getOrderStatus(cOrder.orderStatus)}</td>
-                                            <td className='px-4 py-4 text-center'>{cOrder.paymentMethod}</td>
-                                            <td className='px-4 py-4 text-center'>{cOrder.paymentDate}</td>
-                                            <td className='px-4 py-4 text-center'>{getPaymentStatus(cOrder.paymentStatus)}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-
                 </div>
 
-       
+            </div>
+
+
 
             <Footer />
         </div>

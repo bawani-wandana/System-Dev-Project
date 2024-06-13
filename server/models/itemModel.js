@@ -22,8 +22,8 @@ const getItems = (values, callback) => {
 const updateItem = async (item) => {
     try {
       const { itemID, title, category, stockCount, price, author, isbn, description, threshold } = item;
-      const sqlUpdate = 'UPDATE items SET title = ?, category = ?, stockCount = ?, price = ?, author = ?, isbn = ?, description = ?, threshold =? WHERE itemID = ?';
-      const values = [title, category, stockCount, price, author, isbn, description,threshold, itemID];
+      const sqlUpdate = 'UPDATE items SET title = ?, category = ?, stockCount = ?, price = ?, author = ?, isbn = ?, description = ? WHERE itemID = ?';
+      const values = [title, category, stockCount, price, author, isbn, description, itemID];
       const result = await db.query(sqlUpdate, values);
       return result;
     } catch (error) {
@@ -42,9 +42,6 @@ const updateItem = async (item) => {
       throw error;
     }
   };
-
-
-  
 
 module.exports = {
     addItem,

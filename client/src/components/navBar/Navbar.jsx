@@ -123,9 +123,12 @@ const Navbar = () => {
                   )}
                 </button>
               </Link>
-              <button className='bg-gradient-to-r from-orange-300 to-c3 transition-all duration-200 text-white py-1 px-4 rounded-lg flex items-center gap-3 group'>
-                <FaHeart className='text-xl h-10 w-6 text-white drop-shadow-sm cursor-pointer' />
-              </button>
+              <Link to='/favorites'>
+                <button className='bg-gradient-to-r from-orange-300 to-c3 transition-all duration-200 text-white py-1 px-4 rounded-lg flex items-center gap-3 group'>
+                  <FaHeart className='text-xl h-10 w-6 text-white drop-shadow-sm cursor-pointer' />
+                </button>
+              </Link>
+
             </div>
             {userType ? (
               <button onClick={handleLogout} className='bg-gradient-to-r from-red-600 to-red-400 rounded-lg w-[110px] h-12 text-[20px] text-white'>
@@ -160,12 +163,13 @@ const Navbar = () => {
             </li>
           ))}
           <li className='group relative cursor-pointer'>
-            <div className='flex items-center gap-[2px] py-2 hover:text-yellow-700'>
-              Categories
-              <span>
-                <FaCaretDown className='transition-all duration-200 group-hover:rotate-180' />
-              </span>
-            </div>
+            <Link to='/categories/:category'>
+              <div className='flex items-center gap-[2px] py-2 hover:text-yellow-700'>
+                Categories
+                <span>
+                  <FaCaretDown className='transition-all duration-200 group-hover:rotate-180' />
+                </span>
+              </div></Link>
             <div className='absolute z-[9999] hidden group-hover:block w-[200px] bg-blue-100 rounded-md p-2 text-b1 text-[18px] font-bold shadow-md'>
               <ul>
                 {DropdownLinks.map((data) => (

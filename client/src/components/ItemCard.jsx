@@ -1,12 +1,15 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { FaHeart, FaBan } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { CartContext } from '../contexts/CartContext';
+import { FavoritesContext } from '../contexts/FavoritesContext';
 
 const ItemCard = ({ itemID, name, price, image, stockCount, author }) => {
     const navigate = useNavigate();
     const { addItemToCart } = useContext(CartContext);
-    const [isAdded, setIsAdded] = useState(false);
+    const { addToFavorites } = useContext(FavoritesContext);
+    const [isAddedToCart, setIsAddedToCart] = useState(false);
+    const [isFavorited, setIsFavorited] = useState(false);
 
     const handleClick = () => {
         navigate(`/itemsdisplay/${itemID}`);
@@ -15,7 +18,13 @@ const ItemCard = ({ itemID, name, price, image, stockCount, author }) => {
     const handleAddToCart = async () => {
         const item = { id: itemID, name, price, image, stockCount };
         await addItemToCart(item);
-        setIsAdded(true);
+        setIsAddedToCart(true);
+    };
+
+    const handleAddToFavorites = () => {
+        const item = { id: itemID, name, price, image, stockCount };
+        addToFavorites(item);
+        setIsFavorited(true);
     };
 
     return (
@@ -34,18 +43,20 @@ const ItemCard = ({ itemID, name, price, image, stockCount, author }) => {
                 <div className='flex items-center justify-center gap-4 pb-3 pt-2'>
                     <button
                         onClick={handleAddToCart}
-                        disabled={!stockCount || isAdded}
-                        className={`bg-gradient-to-r ${isAdded ? 'from-green-300 to-green-500' : 'from-orange-300 to-c3'} text-white hover:bg-b1 hover:text-white flex rounded-md px-6 py-3 tracking-wider text-[18px] transition`}
+                        disabled={!stockCount || isAddedToCart}
+                        className={`bg-gradient-to-r ${isAddedToCart ? 'from-green-300 to-green-500' : 'from-orange-300 to-c3'} text-white hover:bg-b1 hover:text-white flex rounded-md px-6 py-3 tracking-wider text-[18px] transition`}
                     >
-                        {isAdded ? 'Added to cart' : 'Add to cart'}
+                        {isAddedToCart ? 'Added to cart' : 'Add to cart'}
                         {!stockCount && (
                             <span className='ml-2 mt-1'>
                                 <FaBan className='text-white text-lg' />
                             </span>
                         )}
                     </button>
-                    <button className='bg-gradient-to-r from-orange-300 to-c3 transition-all duration-200 text-white py-1 px-4 rounded-lg flex items-center gap-3 group'>
-                        <FaHeart className='text-xl h-10 w-6 text-white drop-shadow-sm cursor-pointer' />
+                    <button 
+                        onClick={handleAddToFavorites}
+                        className={`bg-gradient-to-r ${isFavorited ? 'from-green-300 to-green-500' : 'from-orange-300 to-c3'} transition-all duration-200 text-white py-1 px-4 rounded-lg flex items-center gap-3 group`}>
+                        <FaHeart className={`text-xl h-10 w-6 text-white drop-shadow-sm cursor-pointer ${isFavorited ? 'text-red-500' : ''}`} />
                     </button>
                 </div>
             </div>

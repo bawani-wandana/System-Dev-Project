@@ -23,6 +23,11 @@ import StaffOrderStatus from './pages/Staff/StaffOrderStatus'
 import ProfilePage from './pages/ProfilePage'
 import CustomerOrder from './pages/Customer/CustomerOrder'
 import CategoriesPage from './pages/CategoriesPage'
+import AboutPage from './pages/AboutPage'
+import ContactPage from './pages/ContactPage'
+import FavoritePage from './pages/FavoritePage'
+import { FavoritesProvider } from './contexts/FavoritesContext';
+import AddressesPage from './pages/Customer/AddressesPage'
 
 const router = createBrowserRouter([
   {
@@ -109,6 +114,23 @@ const router = createBrowserRouter([
     path:'/categories/:category',
     element: <CategoriesPage/>,
   },
+  {
+    path:'/about',
+    element: <AboutPage/>,
+  },
+  {
+    path:'/contact',
+    element: <ContactPage/>,
+  },
+  {
+    path:'/favorites',
+    element: <FavoritePage/>,
+  },
+  {
+    path:'/address',
+    element: <AddressesPage/>,
+  },
+  
   
  
 ])
@@ -120,9 +142,11 @@ function App() {
 
 
   return (
+    <FavoritesProvider>
     <CartProvider>
     <RouterProvider router={router} />
   </CartProvider>
+  </FavoritesProvider>
   )
 }
 
