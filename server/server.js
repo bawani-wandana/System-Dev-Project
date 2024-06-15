@@ -6,10 +6,12 @@ const itemRoutes = require('./routes/itemsRoute');
 const itemsCustomerRoutes = require ('./routes/itemsCustomerRoutes');
 const userManageRoutes = require ('./routes/userManageRoutes')
 const staffHandlingRoutes = require ('./routes/staffHandlingRoutes')
-const cartRoutes = require ('./routes/cartRoutes')
-const orderRoutes = require ('./routes/orderRoutes')
-const orderDetailsRoutes = require ('./routes/orderDetailsRoutes')
-const addressRoutes = require ('./routes/adressRoutes')
+const cartRoutes = require ('./routes/cartRoutes');
+const orderRoutes = require ('./routes/orderRoutes');
+const orderDetailsRoutes = require ('./routes/orderDetailsRoutes');
+const addressRoutes = require ('./routes/adressRoutes');
+const checkoutRoutes = require('./routes/checkoutRoutes')
+const adminAnalyticsRoutes = require('./routes/adminAnalyticsRoutes');
 
 require ('dotenv').config();
 const db = require ('./config/databaseConnection');
@@ -35,6 +37,8 @@ app.use("/routes", orderRoutes );
 // app.use("/routes", orderDetailsRoutes);
 app.use("/routes", itemsCategoryRoutes);
 app.use("/routes", addressRoutes);
+app.use("/routes", checkoutRoutes);
+app.use("/routes", adminAnalyticsRoutes);
 
 app.listen(PORT, () => {
     console.log("Server is listening on port 8081");

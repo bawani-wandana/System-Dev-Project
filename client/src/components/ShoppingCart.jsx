@@ -4,49 +4,56 @@ import { CartContext } from '../contexts/CartContext';
 import { FaTrash } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
+import { getDecodedToken } from '../services/jwtdecoder';
 
 const ShoppingCart = ({ updateTotal }) => {
+    const decodedToken = getDecodedToken();
     const { cart, addItemToCart, updateItemQuantity, removeItemFromCart } = useContext(CartContext);
     const navigate = useNavigate();
     const [subtotal, setSubtotal] = useState(0);
+    const userId = decodedToken?.id;
 
-    useEffect(() => {
-        if (addItemToCart) {
-            addItemToCart();
-        }
-    }, [addItemToCart]);
+    // useEffect(() => {
+    //     if (addItemToCart) {
+    //         addItemToCart();
+    //     }
+    // }, [addItemToCart]);
 
 
     useEffect(() => {
         const calculatedSubtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
         setSubtotal(calculatedSubtotal);
         updateTotal(calculatedSubtotal);
-    }, [cart, updateTotal]);
 
-    const handleQuantityChange = async (itemID, amount) => {
-        const item = cart.find(item => item.id === itemID);
-        const newQuantity = item.quantity + amount;
+        // Update the cart total in the backend
+        updateCartTotalInBackend(userId, calculatedSubtotal);
+    }, [cart, updateTotal, userId]);
+
+    const updateCartTotalInBackend = async (userId, cartTotal) => {
+        try {
+            await axiosInstance.post('/cart/updateTotal', { userId, cartTotal });
+        } catch (error) {
+            console.error('Error updating cart total in backend:', error);
+        }
+    };
+
+    const handleQuantityChange = async (cartDetailID, itemID, originalQuantity, amount) => {
+        const newQuantity = originalQuantity + amount;
         if (newQuantity > 0) {
             try {
-                await axiosInstance.post('/cart/updateQuantity', { itemId: itemID, quantity: newQuantity });
-                updateItemQuantity(itemID, newQuantity);
+                await updateItemQuantity(cartDetailID, newQuantity, itemID, originalQuantity);
             } catch (error) {
                 console.error('Error updating item quantity:', error);
             }
         }
     };
 
-    const handleRemoveItem = async (itemID) => {
-        const item = cart.find(item => item.id === itemID);
-        const restockQuantity = item.quantity;
-
+    const handleRemoveItem = async (cartDetailID, itemID, quantity) => {
         try {
-            await axiosInstance.post('/cart/remove', { itemId: itemID });
-            await axiosInstance.put(`/restock`, { itemId: itemID, quantity: restockQuantity });
-            removeItemFromCart(itemID);
-            console.log('Item removed and restocked successfully');
+            await removeItemFromCart(cartDetailID, itemID, quantity);
+            console.log('Item removed successfully');
         } catch (error) {
-            console.error('Error removing item and restocking:', error);
+            console.error('Error removing item:', error);
         }
     };
 
@@ -72,7 +79,7 @@ const ShoppingCart = ({ updateTotal }) => {
                                 </thead>
                                 <tbody>
                                     {cart.map((item) => (
-                                        <tr key={item.id}>
+                                        <tr key={item.cartDetailID}>
                                             <td className="py-6 text-[20px]">
                                                 <div className="flex items-center">
                                                     <img className="h-16 w-16 mr-4" src={item.imageUrl} alt={item.title} />
@@ -84,14 +91,14 @@ const ShoppingCart = ({ updateTotal }) => {
                                                 <div className="flex items-center">
                                                     <button
                                                         className="border rounded-md text-white bg-c3 py-2 px-4 mr-2"
-                                                        onClick={() => handleQuantityChange(item.id, -1)}
+                                                        onClick={() => handleQuantityChange(item.cartDetailID, item.itemID, item.quantity, -1)}
                                                     >
                                                         -
                                                     </button>
                                                     <span className="text-center w-8">{item.quantity}</span>
                                                     <button
                                                         className="border bg-c3 text-white rounded-md py-2 px-4 ml-2"
-                                                        onClick={() => handleQuantityChange(item.id, 1)}
+                                                        onClick={() => handleQuantityChange(item.cartDetailID, item.itemID, item.quantity, 1)}
                                                     >
                                                         +
                                                     </button>
@@ -101,7 +108,7 @@ const ShoppingCart = ({ updateTotal }) => {
                                             <td className="py-6 text-[20px]">
                                                 <button
                                                     className="border bg-c3 text-white rounded-md py-3 px-4 ml-2"
-                                                    onClick={() => handleRemoveItem(item.id)}
+                                                    onClick={() => handleRemoveItem(item.cartDetailID, item.itemID, item.quantity)}
                                                 >
                                                     <FaTrash />
                                                 </button>
@@ -113,7 +120,7 @@ const ShoppingCart = ({ updateTotal }) => {
                         </div>
                     </div>
                     <div className="md:w-1/4 text-[20px]">
-                        <OrderSummary subtotal={subtotal} showDetails={false} />
+                        <OrderSummary cartTotal={subtotal} showDetails={false} />
                         <button 
                             className="bg-c3 text-white py-2 px-4 rounded-lg mt-4 w-full" 
                             onClick={handleCheckout}

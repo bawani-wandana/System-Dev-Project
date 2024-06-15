@@ -45,19 +45,22 @@ const Stepper = ({ steps, currentStep }) => {
 
 
     useEffect(() => {
-        //create object
-        const stepsState = steps.map((step, index) =>
-            Object.assign({}, {
-                description: step,
-                completed: false,
-                highlighted: index === 0 ? true : false,
-                selected: index === 0 ? true : false,
-            }));
+           // Create object and remove the third step
+           const stepsState = steps
+           .filter((_, index) => index !== 2) // Exclude the third step (index 2)
+           .map((step, index) =>
+               Object.assign({}, {
+                   description: step,
+                   completed: false,
+                   highlighted: index === 0 ? true : false,
+                   selected: index === 0 ? true : false,
+               })
+           );
 
-        stepRef.current = stepsState;
-        const current = updateStep(currentStep - 1, stepRef.current);
-        setNewStep(current);
-    }, [steps, currentStep]);
+       stepRef.current = stepsState;
+       const current = updateStep(currentStep - 1, stepRef.current);
+       setNewStep(current);
+   }, [steps, currentStep]);
 
 
     const displaySteps = newStep.map((step, index) => {
@@ -83,7 +86,7 @@ justify-center py-3 ${step.selected ? "bg-b1 text-white border border-blue-500" 
                     </div>
                 </div>
                 {index !== newStep.length - 1 && (
-                <div className={`flex w-[360px] border-[2px] transition duration-500 ease-in-out ${step.completed ? "border-b1": "border-gray-300"}`}>
+                <div className={`flex w-[700px] border-[2px] transition duration-500 ease-in-out ${step.completed ? "border-b1": "border-gray-300"}`}>
                     {/* display line */}
                 </div>
                 )}
