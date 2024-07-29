@@ -117,6 +117,7 @@ const ShoppingCart = ({ updateTotal }) => {
                                     ))}
                                 </tbody>
                             </table>
+                            <input type="text" placeholder='Add a Comment' className='w-[200px] h-12 rounded-md text-[20px]'/>
                         </div>
                     </div>
                     <div className="md:w-1/4 text-[20px]">

@@ -27,7 +27,7 @@ const ItemList = () => {
     // Split items into rows of six
     const rows = [];
     for (let i = 0; i < items.length; i += 6) {
-        rows.push(items.slice(i, i + 6));
+        rows.push(items.slice(i, i + 5));
     }
 
     return (

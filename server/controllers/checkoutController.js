@@ -59,34 +59,35 @@ exports.getAddress = (req, res) => {
       });
   
       const cartID = cartResults[0].cartID;
+      const cartTotal = cartResults[0].cartTotal;
   
-      const items = await new Promise((resolve, reject) => {
-        CheckoutModel.getCartItemsByCartId(cartID, (err, items) => {
-          if (err) {
-            console.error("Error fetching cart items from the database:", err);
-            reject({ status: 500, error: "Database query error" });
-          }
-          resolve(items);
-        });
-      });
+      // const items = await new Promise((resolve, reject) => {
+      //   CheckoutModel.getCartItemsByCartId(cartID, (err, items) => {
+      //     if (err) {
+      //       console.error("Error fetching cart items from the database:", err);
+      //       reject({ status: 500, error: "Database query error" });
+      //     }
+      //     resolve(items);
+      //   });
+      // });
   
-      res.json(items);
+      res.json([{ cartID, cartTotal }]);
     } catch (err) {
-      res.status(err.status || 500).json(err);
+        res.status(err.status || 500).json(err);
     }
   };
 
   exports.createPayment = (req, res) => {
-    const { cartID, paymentAmount, paymentType, paymentDate, paymentStatus } = req.body;
+    const { cartID, paymentAmount, paymentMethod, paymentDate, paymentStatus } = req.body;
   
-    if (!cartID || !paymentAmount || !paymentType || !paymentDate || !paymentStatus) {
+    if (!cartID || !paymentAmount || !paymentMethod || !paymentDate || !paymentStatus) {
       return res.status(400).json({ error: "All payment details are required" });
     }
   
     const paymentData = {
       cartID,
       paymentAmount,
-      paymentType,
+      paymentMethod,
       paymentDate,
       paymentStatus
     };
@@ -102,7 +103,7 @@ exports.getAddress = (req, res) => {
   
 
   
-  exports.createOrder = (req, res) => {
+  exports.createOrder = async (req, res) => {
     const { orderDate, orderType, totalAmount, orderStatus, userID, addressID, paymentID} = req.body;
   
     console.log(req.body)
@@ -129,36 +130,41 @@ exports.getAddress = (req, res) => {
       res.json({ orderID: results.insertId });
     });
   };
-  
-  exports.createOrderDetails = (req, res) => {
+
+exports.createOrderDetails = (req, res) => {
     const { orderDetails } = req.body;
-  
+
     if (!orderDetails || !orderDetails.length) {
-      return res.status(400).json({ error: "Order details are required" });
+        return res.status(400).json({ error: "Order details are required" });
     }
-  
+
+    // Validate each order detail entry
+    for (let detail of orderDetails) {
+        if (detail.orderID == null || detail.itemID == null || detail.quantity == null) {
+            return res.status(400).json({ error: "orderID, itemID, and quantity are required for each order detail" });
+        }
+    }
+
     CheckoutModel.createOrderDetails(orderDetails, (error, results) => {
-      if (error) {
-        console.error("Error creating order details in the database:", error);
-        return res.status(500).json({ error: "Database query error" });
-      }
-      res.json({ message: "Order details created successfully" });
+        if (error) {
+            console.error("Error creating order details in the database:", error);
+            return res.status(500).json({ error: "Database query error" });
+        }
+        res.json({ message: "Order details created successfully" });
     });
-  };
-  
-  exports.clearCart = (req, res) => {
+};
+
+
+exports.clearCart = (req, res) => {
     const cartId = req.params.cartId;
-  
     if (!cartId) {
-      return res.status(400).json({ error: "cartId is required" });
+        return res.status(400).json({ error: "cartId is required" });
     }
-  
     CheckoutModel.clearCart(cartId, (error, results) => {
-      if (error) {
-        console.error("Error clearing cart in the database:", error);
-        return res.status(500).json({ error: "Database query error" });
-      }
-      res.json({ message: "Cart cleared successfully" });
+        if (error) {
+            console.error("Error clearing cart in the database:", error);
+            return res.status(500).json({ error: "Database query error" });
+        }
+        res.json({ message: "Cart cleared successfully" });
     });
-  };
-  
+};

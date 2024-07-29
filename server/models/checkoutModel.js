@@ -55,12 +55,12 @@ const CheckoutModel = {
 
     createOrderDetails: (orderDetails, callback) => {
         db.query(
-            "INSERT INTO 'order details' (orderID, itemID, quantity) VALUES ?",
+            "INSERT INTO order_details (quantity, orderID, itemID) VALUES ?",
             [
                 orderDetails.map((detail) => [
+                    detail.quantity,
                     detail.orderID,
                     detail.itemID,
-                    detail.quantity,
                 ]),
             ],
             callback

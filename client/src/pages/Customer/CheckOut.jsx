@@ -3,6 +3,8 @@ import { TextField, MenuItem, Select, InputLabel, FormControl, Typography, Butto
 import { useNavigate } from 'react-router-dom'; // Add useNavigate
 import { getDecodedToken } from '../../services/jwtdecoder';
 import axiosInstance from '../../utils/axiosInstance';
+import { Link } from 'react-router-dom';
+
 
 const CheckOut = ({ totalWithoutShipping }) => {
   const navigate = useNavigate(); // Initialize useNavigate
@@ -16,7 +18,8 @@ const CheckOut = ({ totalWithoutShipping }) => {
     district: '',
     city: '',
     address: '',
-    zipcode: ''
+    zipcode: '',
+    addressID:''
   });
 
   const [formErrors, setFormErrors] = useState({});
@@ -114,7 +117,7 @@ const CheckOut = ({ totalWithoutShipping }) => {
         totalAmount,
         orderStatus: 'Pending',
         userID: userId,
-        addressID: formValues.addressData.addressID,
+        addressID: formValues.addressID,
         paymentID: null
       };
 
@@ -122,15 +125,34 @@ const CheckOut = ({ totalWithoutShipping }) => {
         const paymentResponse = await axiosInstance.post('/createPayment', {
           cartID, // Assuming the cartID is being handled elsewhere
           paymentAmount: totalAmount,
-          paymentType: paymentMethod,
+          paymentMethod: paymentMethod,
           paymentDate: new Date().toISOString(),
           paymentStatus: 'Pending'
         });
 
-        orderData.paymentID = paymentResponse.data.paymentID;
+        if (paymentResponse.data.paymentID) {
+          orderData.paymentID = paymentResponse.data.paymentID;
 
         const orderResponse = await axiosInstance.post('/createOrder', orderData);
-        
+        const orderID = orderResponse.data.orderID;
+        const cartItemsResponse = await axiosInstance.get(`/cartCheckout/${userId}`);
+        const cartItems = cartItemsResponse.data;
+
+        const orderDetails = cartItems.map(item => ({
+          orderID,
+          itemID: item.itemID,
+          quantity: item.quantity
+        }));
+
+        await axiosInstance.post('/createOrderDetails', { orderDetails });
+
+        await axiosInstance.delete(`/clearCart/${cart.cartID}`);
+
+        // Clear form or navigate to success page
+        console.log("Order placed successfully");
+      } else {
+        throw new Error("Payment failed");
+      }
         // Handle order details and clearing the cart after successful order creation
         navigate('/confirmation', { state: { orderID: orderResponse.data.orderID } });
       } catch (error) {
@@ -148,6 +170,7 @@ const CheckOut = ({ totalWithoutShipping }) => {
 
   return (
     <div className='container text-[20px] pl-24 pt-12 dark:bg-gray-900 flex bg-white font-[Lato] font-semibold'>
+ 
       <div className='w-[1500px] rounded-md  bg-c4'>
         <div className='pt-4'>
           <h2 className='text-c3 pl-10 text-[24px]'>Billing Details</h2>
@@ -160,10 +183,10 @@ const CheckOut = ({ totalWithoutShipping }) => {
               variant="outlined"
               margin="normal"
               name="name"
-              value={formValues.firstName}
+              value={formValues.name}
               onChange={handleInputChange}
-              error={!!formErrors.firstName}
-              helperText={formErrors.firstName}
+              error={!!formErrors.name}
+              helperText={formErrors.name}
             />
           </div>
           <div className='mb-4'>
@@ -186,10 +209,10 @@ const CheckOut = ({ totalWithoutShipping }) => {
               variant="outlined"
               margin="normal"
               name="phone"
-              value={formValues.phoneNumber}
+              value={formValues.phone}
               onChange={handleInputChange}
-              error={!!formErrors.phoneNumber}
-              helperText={formErrors.phoneNumber}
+              error={!!formErrors.phone}
+              helperText={formErrors.phone}
             />
           </div>
           <div className='mb-4'>
@@ -291,11 +314,15 @@ const CheckOut = ({ totalWithoutShipping }) => {
           </FormControl>
         </div>
         <div className='pt-8'>
+       
           <Button variant="contained" color="primary" onClick={handleSubmit}>Place Order</Button>
+      
+         
         </div>
       </div>
+
     </div>
   );
-};
+}
 
 export default CheckOut;

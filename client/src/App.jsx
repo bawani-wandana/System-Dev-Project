@@ -82,10 +82,10 @@ const router = createBrowserRouter([
     path:'/cartpage',
     element: <CartPage/>,
   },
-  {
-    path:'/checkout',
-    element: <CheckOut/>,
-  },
+  // {
+  //   path:'/checkout',
+  //   element: <CartPage/>,
+  // },
   {
     path:'/paymentpage',
     element: <PaymentPage/>,

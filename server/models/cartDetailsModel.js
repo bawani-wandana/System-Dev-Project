@@ -1,11 +1,11 @@
 const db = require('../config/databaseConnection');
 
 const CartDetails = {
-    addItem: (cartID, itemID, quantity) => {
+    addItem: (cartID, itemID, quantity, comment) => {
         return new Promise((resolve, reject) => {
             db.query(
-                'INSERT INTO cart_details (cartID, itemID, quantity) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + ?',
-                [cartID, itemID, quantity, quantity],
+                'INSERT INTO cart_details (cartID, itemID, quantity, comment) VALUES (?, ?, ?, ?) ON DUPLICATE KEY UPDATE quantity = quantity + ?',
+                [cartID, itemID, quantity, quantity, comment],
                 (err, results) => {
                     if (err) return reject(err);
                     resolve(results);

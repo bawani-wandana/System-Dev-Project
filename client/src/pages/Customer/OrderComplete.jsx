@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 
 const OrderComplete = () => {
   return (
-    <div className='container md:mt-10 dark:bg-gray-900'>
+    <div className='container md:mt-10'>
       <div className='flex flex-col items-center'>
         <div>
         <img src={completed} alt=""  className='w-36'/>
